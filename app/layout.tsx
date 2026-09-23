@@ -1,22 +1,21 @@
 import type {Metadata} from "next";
-import {Archivo_Black, JetBrains_Mono, Geologica} from "next/font/google";
+import {Syne, JetBrains_Mono, Outfit} from "next/font/google";
 import "./globals.css";
-import PageWrapper from "@/app/components/PageWrapper";
 import NavBar from "@/app/components/NavBar";
 import {NavProvider} from "@/app/context/NavContext";
 
-const Archivo = Archivo_Black({
-    variable: "--font-archivo",
-    weight: "400"
+const syne = Syne({
+    variable: "--font-syne",
+    weight: "700"
 });
 
-const Jetbrains = JetBrains_Mono({
+const jetbrains = JetBrains_Mono({
     variable: "--font-jetbrains",
     subsets: ["latin"],
 });
 
-const Geologicaa = Geologica({
-    variable: "--font-geologica",
+const outfit = Outfit({
+    variable: "--font-outfit",
     subsets: ["latin"],
 });
 
@@ -29,7 +28,7 @@ export default function RootLayout({children}: LayoutProps<"/">) {
     return (
         <html
             lang="fr"
-            className={`${Jetbrains.variable} ${Archivo.variable} ${Geologicaa.variable} h-full antialiased`}
+            className={`${syne.variable} ${jetbrains.variable} ${outfit.variable} h-full antialiased`}
         >
 
         <body className="min-h-screen bg-background w-full">
@@ -37,10 +36,7 @@ export default function RootLayout({children}: LayoutProps<"/">) {
             <header>
                 <NavBar/>
             </header>
-            <PageWrapper>
-                <div className={"fixed top-0 left-0 w-full h-20 bg-linear-to-b from-background to-transparent"}></div>
-                {children}
-            </PageWrapper>
+            {children}
         </NavProvider>
 
         </body>

@@ -1,20 +1,13 @@
 {
   "ui": {
-    "intro": {
-      "description": "Étudiant - Ingénieur - Développeur"
+    "hero": {
+      "titre": "Encore un ingénieur ?",
+      "moi": "Futur ingénieur informatique éclairé",
+      "description": "Vous n'avez pas besoin d'un autre ingénieur informatique. Vous avez besoin d'un précurseur, pionnier des nouvelles technologies pour faire avancer vos projets."
     },
     "moi": {
-      "titre": "Faisons connaissance",
-      "description": "ljnkjnbgkdsl hjfs hdfjkldshf ksjfh skjfhkdsjhfkjdshfk dsfhsdjk fsdkjfhsdkjfh sdkjhfjdsk fhjsdkhf jksdhfkjdshf kjdshfs"
-    },
-    "competences": {
-      "titre": "Ce que je sais faire",
-      "description": "Apprenez en plus sur mes compétences, ainsi que toute les technologies que je maitrise",
-      "nom": "nom",
-      "type": "type",
-      "maitrise": "Niveau de maitrise",
-      "apprentissage": "Apprentissage",
-      "nombre_projets": "Nombre de projets"
+      "titre": "Je suis plus qu'un ingénieur",
+      "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets."
     }
   },
   "competences": [
