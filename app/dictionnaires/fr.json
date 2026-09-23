@@ -10,30 +10,219 @@
       "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets."
     }
   },
-  "competences": [
-    {
-      "nom": "TypeScript",
-      "type": "Programmation ",
-      "chemin_logo": "typescript.png",
-      "maitrise": 4,
-      "apprentissage": "Autodidacte",
-      "nombre_projets": 0
+  "competences": {
+    "titre": "Mes compétences",
+    "programmation": {
+      "titre": "Programmation",
+      "liste": [
+        {
+          "nom": "Java",
+          "chemin_logo": "java.png",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Python",
+          "chemin_logo": "python.webp",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Kotlin",
+          "chemin_logo": "kotlin.png",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "C",
+          "chemin_logo": "c.webp",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "C++",
+          "chemin_logo": "cpp.webp",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Rust",
+          "chemin_logo": "rust.webp",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "C#",
+          "chemin_logo": "csharp.webp",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Assembleur",
+          "chemin_logo": "asm.png",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "R",
+          "chemin_logo": "r.svg",
+          "maitrise": 3,
+          "nombre_projets": 0
+        }
+      ]
     },
-    {
-      "nom": "NextJS",
-      "type": "Programmation",
-      "chemin_logo": "nextjs.jpg",
-      "maitrise": 5,
-      "apprentissage": "Autodidacte",
-      "nombre_projets": 0
+    "web": {
+      "titre": "Web",
+      "liste": [
+        {
+          "nom": "TypeScript",
+          "chemin_logo": "typescript.png",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "NextJS",
+          "chemin_logo": "nextjs.jpg",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "PHP",
+          "chemin_logo": "php.png",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "JavaScript",
+          "chemin_logo": "javascript.png",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "React",
+          "chemin_logo": "react.png",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Angular",
+          "chemin_logo": "angular.png",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Vue.js",
+          "chemin_logo": "vue.webp",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Vite",
+          "chemin_logo": "vite.webp",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "HTML",
+          "chemin_logo": "html.webp",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "CSS",
+          "chemin_logo": "css.webp",
+          "maitrise": 5,
+          "nombre_projets": 0
+        }
+      ]
     },
-    {
-      "nom": "JavaScript",
-      "type": "Programmation",
-      "chemin_logo": "javascript.png",
-      "maitrise": 5,
-      "apprentissage": "Autodidacte",
-      "nombre_projets": 0
+    "bdd": {
+      "titre": "Bases de données",
+      "liste": [
+        {
+          "nom": "PostgreSQL",
+          "chemin_logo": "postgres.webp",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "SQL server",
+          "chemin_logo": "sqlserver.png",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "SQLite",
+          "chemin_logo": "sqlite.webp",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "MySQL",
+          "chemin_logo": "mysql.png",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "MongoDB",
+          "chemin_logo": "mongodb.webp",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Supabase",
+          "chemin_logo": "supabase.webp",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Neon",
+          "chemin_logo": "neon.webp",
+          "maitrise": 5,
+          "nombre_projets": 0
+        }
+      ]
+    },
+    "deploiement": {
+      "titre": "Déploiement",
+      "liste": [
+        {
+          "nom": "Azure",
+          "chemin_logo": "azure.png",
+          "maitrise": 4,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Vercel",
+          "chemin_logo": "vercel.svg",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Apache",
+          "chemin_logo": "apache.png",
+          "maitrise": 5,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Windows Server",
+          "chemin_logo": "wserver.webp",
+          "maitrise": 3,
+          "nombre_projets": 0
+        },
+        {
+          "nom": "Docker",
+          "chemin_logo": "docker.png",
+          "maitrise": 5,
+          "nombre_projets": 0
+        }
+      ]
+    },
+    "equipe": {
+      "titre": "Travail d'équipe",
+      "liste": [
+
+      ]
     }
-  ]
+  }
 }

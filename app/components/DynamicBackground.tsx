@@ -7,21 +7,24 @@ import Anm from "@/app/components/Animator3000";
 function BackgroundScrubber() {
     const contentOpacity = useMotionValue(0);
     const codeOpacity = useMotionValue(0);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
             const contentEl = document.getElementById("content");
             const codeEl = document.getElementById("code");
             const windowHeight = window.innerHeight;
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
 
-            // Calcul progressif :
-            // 0 quand le haut de la div est à 90% du bas de l'écran
-            // 1 quand le haut de la div monte à 30% du haut de l'écran
+            const startFactor = mobile ? 0.95 : 0.9;
+            const endFactor = mobile ? 0.45 : 0.3;
+
             const calcProgress = (el: HTMLElement | null) => {
                 if (!el) return 0;
                 const top = el.getBoundingClientRect().top;
-                const start = windowHeight * 0.9;
-                const end = windowHeight * 0.3;
+                const start = windowHeight * startFactor;
+                const end = windowHeight * endFactor;
 
                 if (top >= start) return 0;
                 if (top <= end) return 1;
@@ -42,32 +45,30 @@ function BackgroundScrubber() {
         };
     }, [contentOpacity, codeOpacity]);
 
-    // Le flou progresse doucement de 0px à 30px dès qu'on commence à scroller sur content
-    const blurValue = useTransform(contentOpacity, [0, 1], ["blur(0px)", "blur(30px)"]);
+    const maxBlur = isMobile ? "blur(16px)" : "blur(30px)";
+    const blurValue = useTransform(contentOpacity, [0, 1], ["blur(0px)", maxBlur]);
 
     return (
         <>
-            {/* Calque de flou commun (évite de multiplier les filtres graphiques) */}
+            {/* Utilisation de fixed inset-0 pour garantir la couverture plein écran quel que soit le parent */}
             <motion.div
-                className="w-full h-screen absolute top-0 left-0"
+                className="fixed inset-0 w-screen h-[100dvh] md:h-screen pointer-events-none"
                 style={{
                     backdropFilter: blurValue,
                     WebkitBackdropFilter: blurValue,
                 }}
             />
 
-            {/* Calque 1 : opacité progressive vers var(--background) */}
             <motion.div
-                className="w-full h-screen absolute top-0 left-0"
+                className="fixed inset-0 w-screen h-[100dvh] md:h-screen pointer-events-none"
                 style={{
                     backgroundColor: "var(--background)",
                     opacity: contentOpacity,
                 }}
             />
 
-            {/* Calque 2 : opacité progressive vers var(--foreground) par-dessus */}
             <motion.div
-                className="w-full h-screen absolute top-0 left-0"
+                className="fixed inset-0 w-screen h-[100dvh] md:h-screen pointer-events-none"
                 style={{
                     backgroundColor: "var(--foreground)",
                     opacity: codeOpacity,
@@ -86,16 +87,18 @@ export default function DynBg() {
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 w-full h-screen -z-1 pointer-events-none">
-            <Anm className="w-full h-screen" y={0} scale={1.5}>
+        <div className="fixed inset-0 w-full h-[100dvh] md:h-screen -z-1 pointer-events-none overflow-hidden">
+            {/* L'image subit le scale de Anm */}
+            <Anm className="w-full h-full min-h-[100dvh] md:min-h-screen" y={0} scale={1.5}>
                 <img
-                    className="w-full h-screen object-cover"
+                    className="w-full h-full min-h-[100dvh] md:min-h-screen object-cover"
                     src="/hero.jpeg"
                     alt="hero"
                 />
-
-                {isMounted && <BackgroundScrubber />}
             </Anm>
+
+            {/* Le scrubber est sorti du conteneur transformé pour ne pas être bridé par Anm */}
+            {isMounted && <BackgroundScrubber />}
         </div>
     );
 }

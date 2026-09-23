@@ -26,5 +26,6 @@ h1, h2, h3 {
 }
 
 code {
+  color: var(--background);
   font-family: JetBrains Mono, Helvetica, sans-serif;
 }
