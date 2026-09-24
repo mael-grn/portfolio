@@ -37,6 +37,7 @@ export default async function Home({params}: Props) {
                     <Anm  delay={0.1}>
                         <h1 className={"sm:text-7xl text-4xl font-bold"}>{dict.ui.moi.titre}</h1>
                     </Anm>
+
                     <Anm  delay={0.2}>
                         <p className={"text-xl"}>{dict.ui.moi.description}</p>
                     </Anm>
