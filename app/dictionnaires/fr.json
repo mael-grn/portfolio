@@ -10,6 +10,24 @@
       "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets."
     }
   },
+  "projets": {
+    "titre": "Mes projets",
+    "liste": [
+      {
+        "nom": "Lightness Duo",
+        "description": "ksdj flksjd flkdsfj dsklfj ldskfjlk ezjlkfjeziln zeiln ezin vkuezbnvuk ezbvkzeub kuezb kuzb fub ezufb ezjfb ezj",
+        "dateDebut": "01/09/2026",
+        "dateFin": "17/09/2026",
+        "competences": [
+          "Next.js", "Vercel", "Neon", "PostgreSQL"
+        ],
+        "images": [
+          "lightness-home.jpg",
+          "lightness-editor.jpg"
+        ]
+      }
+    ]
+  },
   "competences": {
     "titre": "Mes compétences",
     "programmation": {

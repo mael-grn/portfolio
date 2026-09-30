@@ -18,7 +18,7 @@ export default function Anm({delay = 0, x = 0, y = 60, scale = 1, children, clas
             ease: [0.16, 1, 0.3, 1]
         }}
         layoutId={layoutId}
-        layout
+        layout={layoutId !== undefined}
         className={className}
     >
         <motion.div
@@ -28,9 +28,10 @@ export default function Anm({delay = 0, x = 0, y = 60, scale = 1, children, clas
                 ease: [0.16, 1, 0.3, 1],
                 delay: delay
             }}
-            initial={{opacity: 0, y: y, x: x, scale: scale, filter: "blur(10px)"}}
+            initial={{opacity: 0, y: y, x: x, scale: scale}}
+            viewport={{ once: true}}
             whileInView={{
-                opacity: 1, y: 0, x: 0, scale: 1, filter: "blur(0px)"
+                opacity: 1, y: 0, x: 0, scale: 1
             }}
             exit={{scale: 0}}
         >

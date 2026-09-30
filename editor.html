@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Studio &bull; Éditeur de Données</title>
+
+    <!-- Tailwind CSS CDN & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        surface: {
+                            base: '#0B0F17',
+                            card: '#111827',
+                            border: '#1F2937',
+                            hover: '#1E293B',
+                            accent: '#374151'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                    },
+                    keyframes: {
+                        fadeIn: { from: { opacity: 0, transform: 'translateY(6px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+                        scaleIn: { from: { opacity: 0, transform: 'scale(0.97)' }, to: { opacity: 1, transform: 'scale(1)' } },
+                        slideInRight: { from: { transform: 'translateX(100%)' }, to: { transform: 'translateX(0)' } }
+                    },
+                    animation: {
+                        fade: 'fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        scale: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        slideRight: 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0B0F17; }
+        ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+        .glow-hover:hover {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .custom-input {
+            background-color: #0d121d;
+            border: 1px solid #1F2937;
+            transition: all 0.2s ease;
+        }
+        .custom-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-surface-base text-gray-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+<!-- En-tête -->
+<header class="sticky top-0 z-40 backdrop-blur-xl bg-surface-base/80 border-b border-surface-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <i data-lucide="layers" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-semibold tracking-wide flex items-center gap-2">
+                    Portfolio Config Studio
+                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-500 border border-brand-500/20">fr.json</span>
+                </h1>
+                <p class="text-xs text-gray-400">Chemin cible: <code class="text-gray-300 font-mono">app/dictionnaires/fr.json</code></p>
+            </div>
+        </div>
+
+        <!-- Actions Globales -->
+        <div class="flex items-center gap-2">
+            <label class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-hover border border-surface-border text-xs font-medium cursor-pointer transition flex items-center gap-1.5 text-gray-300 hover:text-white">
+                <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                Importer
+                <input type="file" id="importInput" accept=".json" class="hidden">
+            </label>
+
+            <button id="btnRawJson" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-hover border border-surface-border text-xs font-medium transition flex items-center gap-1.5 text-gray-300 hover:text-white">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                Code JSON
+            </button>
+
+            <button id="btnExport" class="px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-lg shadow-brand-600/20 transition flex items-center gap-1.5">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                Exporter fr.json
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Contenu Principal -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+    <!-- Navigation par Onglets -->
+    <div class="flex items-center justify-between border-b border-surface-border pb-3">
+        <div class="flex gap-2">
+            <button id="tabBtnCompetences" onclick="switchMainTab('competences')" class="px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-surface-card text-brand-500 border border-brand-500/30">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                Compétences
+            </button>
+            <button id="tabBtnProjets" onclick="switchMainTab('projets')" class="px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-transparent text-gray-400 hover:text-white hover:bg-surface-card/50">
+                <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+                Projets
+            </button>
+        </div>
+
+        <!-- Statut Rapide -->
+        <div id="statsSummary" class="text-xs text-gray-400 font-mono hidden sm:flex items-center gap-4">
+            <!-- Rempli en JS -->
+        </div>
+    </div>
+
+    <!-- Section Compétences -->
+    <div id="sectionCompetences" class="space-y-6">
+
+        <!-- Barre d'outils Compétences -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-card p-3 rounded-2xl border border-surface-border">
+
+            <!-- Sélecteur de catégorie -->
+            <div class="flex flex-wrap items-center gap-1.5" id="categoryTabs">
+                <!-- Injecté dynamiquement -->
+            </div>
+
+            <!-- Filtres & Actions -->
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1 sm:w-48">
+                    <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="skillSearch" placeholder="Filtrer..." class="custom-input pl-8 pr-3 py-1.5 text-xs rounded-xl w-full text-gray-200 placeholder-gray-500">
+                </div>
+
+                <div class="relative">
+                    <select id="skillSort" class="custom-input pl-3 pr-8 py-1.5 text-xs rounded-xl text-gray-200 appearance-none cursor-pointer">
+                        <option value="default">Tri: Par défaut</option>
+                        <option value="name-asc">Nom (A &rarr; Z)</option>
+                        <option value="name-desc">Nom (Z &rarr; A)</option>
+                        <option value="level-desc">Maîtrise (5 &rarr; 1)</option>
+                        <option value="level-asc">Maîtrise (1 &rarr; 5)</option>
+                        <option value="projects-desc">Projets (Décroissant)</option>
+                    </select>
+                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                </div>
+
+                <button onclick="openSkillModal()" class="px-3 py-1.5 rounded-xl bg-brand-600/90 hover:bg-brand-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    Ajouter
+                </button>
+            </div>
+        </div>
+
+        <!-- Grille des compétences -->
+        <div id="skillsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Injecté dynamiquement -->
+        </div>
+    </div>
+
+    <!-- Section Projets -->
+    <div id="sectionProjets" class="space-y-6 hidden">
+
+        <!-- Barre d'outils Projets -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-card p-3 rounded-2xl border border-surface-border">
+            <div class="flex items-center gap-3">
+                <h2 class="text-sm font-semibold tracking-wide text-gray-200" id="projectsHeaderTitle">Mes projets</h2>
+                <span id="projectsCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-surface-hover border border-surface-border text-gray-400">0</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1 sm:w-60">
+                    <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="projectSearch" placeholder="Rechercher un projet ou techno..." class="custom-input pl-8 pr-3 py-1.5 text-xs rounded-xl w-full text-gray-200 placeholder-gray-500">
+                </div>
+
+                <div class="relative">
+                    <select id="projectSort" class="custom-input pl-3 pr-8 py-1.5 text-xs rounded-xl text-gray-200 appearance-none cursor-pointer">
+                        <option value="default">Tri: Par défaut</option>
+                        <option value="name-asc">Nom (A &rarr; Z)</option>
+                        <option value="name-desc">Nom (Z &rarr; A)</option>
+                        <option value="date-desc">Plus récent</option>
+                        <option value="date-asc">Plus ancien</option>
+                    </select>
+                    <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                </div>
+
+                <button onclick="openProjectModal()" class="px-3 py-1.5 rounded-xl bg-brand-600/90 hover:bg-brand-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    Nouveau Projet
+                </button>
+            </div>
+        </div>
+
+        <!-- Liste / Cartes de projets -->
+        <div id="projectsList" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Injecté dynamiquement -->
+        </div>
+    </div>
+
+</main>
+
+<!-- MODAL: Compétence (Ajout / Édition) -->
+<div id="skillModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-card border border-surface-border w-full max-w-lg rounded-2xl shadow-2xl p-6 relative animate-scale max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-border">
+            <h3 id="skillModalTitle" class="text-base font-semibold text-gray-100 flex items-center gap-2">
+                <i data-lucide="cpu" class="w-4 h-4 text-brand-500"></i>
+                Ajouter une compétence
+            </h3>
+            <button onclick="closeSkillModal()" class="text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <form id="skillForm" onsubmit="saveSkill(event)" class="space-y-4 pt-4 overflow-y-auto pr-1 flex-1">
+            <input type="hidden" id="skillIndex" value="-1">
+
+            <div>
+                <label class="block text-xs font-medium text-gray-300 mb-1">Catégorie *</label>
+                <select id="skillCategory" class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200">
+                    <!-- Rempli dynamiquement -->
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Nom de la compétence *</label>
+                    <input type="text" id="skillName" required placeholder="ex: TypeScript, Docker..." class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Nom du fichier logo</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="skillLogo" placeholder="ex: docker.png" class="custom-input flex-1 p-2.5 rounded-xl text-xs text-gray-200 font-mono">
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-1">Situé dans <code class="text-gray-400">public/illustrations/</code></p>
+                </div>
+            </div>
+
+            <!-- Aperçu Logo -->
+            <div class="flex items-center gap-3 p-3 bg-surface-base rounded-xl border border-surface-border">
+                <div class="w-10 h-10 rounded-lg bg-surface-card border border-surface-border flex items-center justify-center overflow-hidden shrink-0">
+                    <img id="skillLogoPreview" src="" alt="" class="w-6 h-6 object-contain hidden" onerror="this.classList.add('hidden')">
+                    <i id="skillLogoFallback" data-lucide="image" class="w-5 h-5 text-gray-600"></i>
+                </div>
+                <div class="text-xs">
+                    <span class="text-gray-300 font-medium">Aperçu du visuel</span>
+                    <p class="text-[11px] text-gray-500" id="skillLogoPathHint">public/illustrations/(aucun)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-medium text-gray-300">Niveau de maîtrise (optionnel)</label>
+                        <span id="skillLevelDisplay" class="text-xs font-mono text-brand-500 font-semibold">5 / 5</span>
+                    </div>
+                    <input type="range" id="skillLevel" min="0" max="5" value="5" step="1" class="w-full accent-brand-500 cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-gray-500 px-0.5">
+                        <span>Non défini (0)</span>
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                        <span>5</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Nombre de projets réalisés</label>
+                    <input type="number" id="skillProjectsCount" min="0" placeholder="0" class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200">
+                </div>
+            </div>
+
+            <!-- Champs personnalisés optionnels -->
+            <div class="border-t border-surface-border pt-4">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+                        <i data-lucide="sliders" class="w-3.5 h-3.5 text-brand-500"></i>
+                        Champs personnalisés additionnels
+                    </label>
+                    <button type="button" onclick="addCustomSkillField()" class="text-[11px] text-brand-500 hover:text-brand-400 font-medium flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i> Ajouter un champ
+                    </button>
+                </div>
+                <div id="skillCustomFieldsContainer" class="space-y-2">
+                    <!-- Paires clé-valeur dynamiques -->
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-border">
+                <button type="button" onclick="closeSkillModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white transition">
+                    Annuler
+                </button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition shadow-lg shadow-brand-600/20">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Projet (Ajout / Édition) -->
+<div id="projectModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-card border border-surface-border w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative animate-scale max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-border">
+            <h3 id="projectModalTitle" class="text-base font-semibold text-gray-100 flex items-center gap-2">
+                <i data-lucide="folder-git-2" class="w-4 h-4 text-brand-500"></i>
+                Nouveau projet
+            </h3>
+            <button onclick="closeProjectModal()" class="text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <form id="projectForm" onsubmit="saveProject(event)" class="space-y-4 pt-4 overflow-y-auto pr-1 flex-1">
+            <input type="hidden" id="projectIndex" value="-1">
+
+            <div>
+                <label class="block text-xs font-medium text-gray-300 mb-1">Nom du projet *</label>
+                <input type="text" id="projectName" required placeholder="ex: Lightness Duo" class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Date Début (format: JJ/MM/AAAA)</label>
+                    <input type="text" id="projectDateDebut" placeholder="01/09/2026" class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200 font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Date Fin (format: JJ/MM/AAAA)</label>
+                    <input type="text" id="projectDateFin" placeholder="17/09/2026" class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200 font-mono">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-300 mb-1">Description</label>
+                <textarea id="projectDescription" rows="3" placeholder="Présentation synthétique du projet..." class="custom-input w-full p-2.5 rounded-xl text-xs text-gray-200 resize-none"></textarea>
+            </div>
+
+            <!-- Compétences / Tags associées -->
+            <div>
+                <label class="block text-xs font-medium text-gray-300 mb-1">Technologies &amp; Compétences (séparez avec Entrée ou Virgule)</label>
+                <div class="custom-input p-2 rounded-xl flex flex-wrap gap-1.5 items-center min-h-[44px]" id="projectTagsContainer">
+                    <!-- Tags injectés -->
+                    <input type="text" id="projectTagInput" placeholder="Ajouter un tag..." class="bg-transparent text-xs text-gray-200 focus:outline-none flex-1 min-w-[120px] px-1">
+                </div>
+                <div class="mt-1 flex flex-wrap gap-1 items-center" id="quickAddTagsContainer">
+                    <span class="text-[10px] text-gray-500 mr-1">Suggestions :</span>
+                    <!-- Suggestions rapides de tags -->
+                </div>
+            </div>
+
+            <!-- Galerie d'images (public/projets) -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-medium text-gray-300">Images du projet (stockées dans <code class="text-gray-400 font-mono">public/projets/</code>)</label>
+                    <button type="button" onclick="addImageToProjectField()" class="text-[11px] text-brand-500 hover:text-brand-400 font-medium flex items-center gap-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i> Ajouter un fichier image
+                    </button>
+                </div>
+
+                <div id="projectImagesList" class="space-y-2">
+                    <!-- Liste d'entrées d'images -->
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-border">
+                <button type="button" onclick="closeProjectModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white transition">
+                    Annuler
+                </button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition shadow-lg shadow-brand-600/20">
+                    Enregistrer le projet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Code JSON Brut -->
+<div id="rawJsonModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-card border border-surface-border w-full max-w-3xl rounded-2xl shadow-2xl p-6 relative animate-scale flex flex-col h-[85vh]">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-border">
+            <h3 class="text-base font-semibold text-gray-100 flex items-center gap-2">
+                <i data-lucide="code" class="w-4 h-4 text-brand-500"></i>
+                Aperçu direct fr.json
+            </h3>
+            <div class="flex items-center gap-2">
+                <button id="btnCopyJson" class="px-3 py-1.5 rounded-lg bg-surface-hover hover:bg-surface-border border border-surface-border text-xs text-gray-300 hover:text-white transition flex items-center gap-1.5">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    Copier
+                </button>
+                <button onclick="closeRawJsonModal()" class="text-gray-400 hover:text-white transition p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 my-4 overflow-hidden rounded-xl border border-surface-border bg-surface-base">
+            <textarea id="rawJsonTextarea" class="w-full h-full p-4 font-mono text-xs bg-transparent text-emerald-400 resize-none focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-surface-border">
+            <span>Vous pouvez modifier directement le JSON ci-dessus puis cliquer sur Appliquer.</span>
+            <button onclick="applyRawJsonChanges()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition">
+                Appliquer les changements
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Toast -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 px-4 py-3 rounded-xl bg-surface-card border border-brand-500/40 text-gray-100 text-xs shadow-xl shadow-black/40">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500"></i>
+    <span id="toastMsg">Opération effectuée</span>
+</div>
+
+<script>
+    // Données par défaut (structure exacte de app/dictionnaires/fr.json)
+    let portfolioData = {
+        "ui": {
+            "hero": {
+                "titre": "Encore un ingénieur ?",
+                "moi": "Futur ingénieur informatique éclairé",
+                "description": "Vous n'avez pas besoin d'un autre ingénieur informatique. Vous avez besoin d'un précurseur, pionnier des nouvelles technologies pour faire avancer vos projets."
+            },
+            "moi": {
+                "titre": "Je suis plus qu'un ingénieur",
+                "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets."
+            }
+        },
+        "projets": {
+            "titre": "Mes projets",
+            "liste": [
+                {
+                    "nom": "Lightness Duo",
+                    "description": "Plateforme web collaborative moderne intégrant Next.js, Neon et gestion dynamique d'assets.",
+                    "dateDebut": "01/09/2026",
+                    "dateFin": "17/09/2026",
+                    "competences": [
+                        "Next.js", "Vercel", "Neon", "PostgreSQL"
+                    ],
+                    "images": [
+                        "lightness-home.jpg",
+                        "lightness-editor.jpg"
+                    ]
+                }
+            ]
+        },
+        "competences": {
+            "titre": "Mes compétences",
+            "programmation": {
+                "titre": "Programmation",
+                "liste": [
+                    { "nom": "Java", "chemin_logo": "java.png", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "Python", "chemin_logo": "python.webp", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "Kotlin", "chemin_logo": "kotlin.png", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "C", "chemin_logo": "c.webp", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "C++", "chemin_logo": "cpp.webp", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "Rust", "chemin_logo": "rust.webp", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "C#", "chemin_logo": "csharp.webp", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "Assembleur", "chemin_logo": "asm.png", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "R", "chemin_logo": "r.svg", "maitrise": 3, "nombre_projets": 0 }
+                ]
+            },
+            "web": {
+                "titre": "Web",
+                "liste": [
+                    { "nom": "TypeScript", "chemin_logo": "typescript.png", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "NextJS", "chemin_logo": "nextjs.jpg", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "PHP", "chemin_logo": "php.png", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "JavaScript", "chemin_logo": "javascript.png", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "React", "chemin_logo": "react.png", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "Angular", "chemin_logo": "angular.png", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "Vue.js", "chemin_logo": "vue.webp", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "Vite", "chemin_logo": "vite.webp", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "HTML", "chemin_logo": "html.webp", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "CSS", "chemin_logo": "css.webp", "maitrise": 5, "nombre_projets": 0 }
+                ]
+            },
+            "bdd": {
+                "titre": "Bases de données",
+                "liste": [
+                    { "nom": "PostgreSQL", "chemin_logo": "postgres.webp", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "SQL server", "chemin_logo": "sqlserver.png", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "SQLite", "chemin_logo": "sqlite.webp", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "MySQL", "chemin_logo": "mysql.png", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "MongoDB", "chemin_logo": "mongodb.webp", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "Supabase", "chemin_logo": "supabase.webp", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "Neon", "chemin_logo": "neon.webp", "maitrise": 5, "nombre_projets": 0 }
+                ]
+            },
+            "deploiement": {
+                "titre": "Déploiement",
+                "liste": [
+                    { "nom": "Azure", "chemin_logo": "azure.png", "maitrise": 4, "nombre_projets": 0 },
+                    { "nom": "Vercel", "chemin_logo": "vercel.svg", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "Apache", "chemin_logo": "apache.png", "maitrise": 5, "nombre_projets": 0 },
+                    { "nom": "Windows Server", "chemin_logo": "wserver.webp", "maitrise": 3, "nombre_projets": 0 },
+                    { "nom": "Docker", "chemin_logo": "docker.png", "maitrise": 5, "nombre_projets": 0 }
+                ]
+            },
+            "equipe": {
+                "titre": "Travail d'équipe",
+                "liste": []
+            }
+        }
+    };
+
+    // État de l'interface
+    let currentMainTab = 'competences';
+    let currentSkillCategoryKey = 'programmation';
+    let currentProjectTags = [];
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', () => {
+        // LocalStorage Cache optionnel
+        const saved = localStorage.getItem('portfolio_fr_json_backup');
+        if (saved) {
+            try { portfolioData = JSON.parse(saved); } catch(e){}
+        }
+
+        initCategories();
+        renderSkills();
+        renderProjects();
+        updateStats();
+        setupEventListeners();
+        lucide.createIcons();
+    });
+
+    function saveStateToStorage() {
+        localStorage.setItem('portfolio_fr_json_backup', JSON.stringify(portfolioData));
+        updateStats();
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMsg');
+        toastMsg.innerText = message;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2500);
+    }
+
+    // Gestion des Onglets Principaux
+    function switchMainTab(tab) {
+        currentMainTab = tab;
+        const tabComp = document.getElementById('tabBtnCompetences');
+        const tabProj = document.getElementById('tabBtnProjets');
+        const secComp = document.getElementById('sectionCompetences');
+        const secProj = document.getElementById('sectionProjets');
+
+        if (tab === 'competences') {
+            tabComp.className = "px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-surface-card text-brand-500 border border-brand-500/30";
+            tabProj.className = "px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-transparent text-gray-400 hover:text-white hover:bg-surface-card/50";
+            secComp.classList.remove('hidden');
+            secProj.classList.add('hidden');
+        } else {
+            tabProj.className = "px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-surface-card text-brand-500 border border-brand-500/30";
+            tabComp.className = "px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 bg-transparent text-gray-400 hover:text-white hover:bg-surface-card/50";
+            secProj.classList.remove('hidden');
+            secComp.classList.add('hidden');
+        }
+        lucide.createIcons();
+    }
+
+    // Statistiques globales
+    function updateStats() {
+        let totalSkills = 0;
+        let totalCats = 0;
+        if (portfolioData.competences) {
+            Object.entries(portfolioData.competences).forEach(([key, val]) => {
+                if (key !== 'titre' && val.liste) {
+                    totalCats++;
+                    totalSkills += val.liste.length;
+                }
+            });
+        }
+        const totalProjects = portfolioData.projets?.liste?.length || 0;
+
+        const statsElem = document.getElementById('statsSummary');
+        statsElem.innerHTML = `
+        <span class="flex items-center gap-1.5"><i data-lucide="layers" class="w-3.5 h-3.5 text-brand-500"></i> ${totalCats} Catégories</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5 text-teal-400"></i> ${totalSkills} Compétences</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="folder-git-2" class="w-3.5 h-3.5 text-blue-400"></i> ${totalProjects} Projets</span>
+      `;
+        lucide.createIcons();
+    }
+
+    // ==========================================
+    // MODULE: COMPÉTENCES & CATÉGORIES
+    // ==========================================
+    function getCategoryKeys() {
+        if (!portfolioData.competences) return [];
+        return Object.keys(portfolioData.competences).filter(k => k !== 'titre');
+    }
+
+    function initCategories() {
+        const container = document.getElementById('categoryTabs');
+        const selectModal = document.getElementById('skillCategory');
+        container.innerHTML = '';
+        selectModal.innerHTML = '';
+
+        const keys = getCategoryKeys();
+        if (keys.length === 0) return;
+        if (!keys.includes(currentSkillCategoryKey)) {
+            currentSkillCategoryKey = keys[0];
+        }
+
+        keys.forEach(key => {
+            const cat = portfolioData.competences[key];
+            const title = cat.titre || key;
+            const count = cat.liste ? cat.liste.length : 0;
+
+            // Bouton onglet catégorie
+            const btn = document.createElement('button');
+            const isActive = key === currentSkillCategoryKey;
+            btn.className = `px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
+                isActive
+                    ? 'bg-brand-500/10 text-brand-500 border border-brand-500/30 font-semibold'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-surface-hover'
+            }`;
+            btn.innerHTML = `
+          <span>${title}</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-brand-500/20 text-brand-400' : 'bg-surface-border text-gray-400'}">${count}</span>
+        `;
+            btn.onclick = () => {
+                currentSkillCategoryKey = key;
+                initCategories();
+                renderSkills();
+            };
+            container.appendChild(btn);
+
+            // Option dans la modale
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = `${title} (${key})`;
+            selectModal.appendChild(opt);
+        });
+    }
+
+    function renderSkills() {
+        const grid = document.getElementById('skillsGrid');
+        grid.innerHTML = '';
+
+        const category = portfolioData.competences[currentSkillCategoryKey];
+        if (!category || !category.liste) {
+            grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-xs">Aucune compétence trouvée.</div>`;
+            return;
+        }
+
+        let skills = [...category.liste];
+        const search = document.getElementById('skillSearch').value.toLowerCase().trim();
+        const sort = document.getElementById('skillSort').value;
+
+        // Filtrage
+        if (search) {
+            skills = skills.filter(s => (s.nom && s.nom.toLowerCase().includes(search)) ||
+                Object.values(s).some(v => typeof v === 'string' && v.toLowerCase().includes(search))
+            );
+        }
+
+        // Tri
+        if (sort === 'name-asc') skills.sort((a,b) => (a.nom||'').localeCompare(b.nom||''));
+        else if (sort === 'name-desc') skills.sort((a,b) => (b.nom||'').localeCompare(a.nom||''));
+        else if (sort === 'level-desc') skills.sort((a,b) => (b.maitrise||0) - (a.maitrise||0));
+        else if (sort === 'level-asc') skills.sort((a,b) => (a.maitrise||0) - (b.maitrise||0));
+        else if (sort === 'projects-desc') skills.sort((a,b) => (b.nombre_projets||0) - (a.nombre_projets||0));
+
+        if (skills.length === 0) {
+            grid.innerHTML = `
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-gray-500 text-xs">
+            <i data-lucide="inbox" class="w-8 h-8 mb-2 stroke-1"></i>
+            Aucune compétence dans cette catégorie ou correspondant à votre recherche.
+          </div>
+        `;
+            lucide.createIcons();
+            return;
+        }
+
+        skills.forEach((skill) => {
+            const originalIndex = category.liste.indexOf(skill);
+            const card = document.createElement('div');
+            card.className = "bg-surface-card border border-surface-border rounded-2xl p-4 transition-all duration-200 glow-hover flex flex-col justify-between group relative";
+
+            // Logo & Maitrise
+            const logoPath = skill.chemin_logo ? `public/illustrations/${skill.chemin_logo}` : null;
+
+            // Etoiles / Jauge de maîtrise
+            let maitriseHtml = '';
+            if (skill.maitrise !== undefined && skill.maitrise !== null && skill.maitrise > 0) {
+                maitriseHtml = `
+            <div class="flex items-center gap-1">
+              ${Array.from({ length: 5 }).map((_, i) => `
+                <div class="w-1.5 h-1.5 rounded-full ${i < skill.maitrise ? 'bg-brand-500' : 'bg-surface-accent'}"></div>
+              `).join('')}
+              <span class="text-[11px] font-mono text-gray-400 ml-1">${skill.maitrise}/5</span>
+            </div>
+          `;
+            }
+
+            // Champs optionnels additionnels
+            const reservedKeys = ['nom', 'chemin_logo', 'maitrise', 'nombre_projets'];
+            const extraFields = Object.entries(skill).filter(([k]) => !reservedKeys.includes(k));
+
+            card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-surface-base border border-surface-border flex items-center justify-center overflow-hidden shrink-0 group-hover:border-brand-500/40 transition">
+                  ${logoPath
+                ? `<img src="${logoPath}" alt="${skill.nom}" class="w-6 h-6 object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-xs font-mono font-bold text-gray-400\\'>${(skill.nom||'?').slice(0,2).toUpperCase()}</span>'">`
+                : `<span class="text-xs font-mono font-bold text-gray-400">${(skill.nom||'?').slice(0,2).toUpperCase()}</span>`
+            }
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-100 group-hover:text-brand-400 transition">${skill.nom || 'Sans nom'}</h4>
+                  <p class="text-[10px] text-gray-500 font-mono truncate max-w-[130px]">${skill.chemin_logo || 'aucun logo'}</p>
+                </div>
+              </div>
+
+              <!-- Menu Actions -->
+              <div class="flex items-center gap-1 opacity-90 group-hover:opacity-100 transition">
+                <button onclick="editSkill('${currentSkillCategoryKey}', ${originalIndex})" title="Modifier" class="p-1.5 text-gray-400 hover:text-white hover:bg-surface-hover rounded-lg transition">
+                  <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                </button>
+                <button onclick="deleteSkill('${currentSkillCategoryKey}', ${originalIndex})" title="Supprimer" class="p-1.5 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Détails / Métriques -->
+            <div class="space-y-1.5 text-xs text-gray-400 pt-2 border-t border-surface-border/50">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Niveau</span>
+                ${maitriseHtml || '<span class="text-[10px] text-gray-600">Non défini</span>'}
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Projets associés</span>
+                <span class="text-[11px] font-mono text-gray-300">${skill.nombre_projets ?? 0}</span>
+              </div>
+
+              ${extraFields.length > 0 ? `
+                <div class="mt-2 pt-2 border-t border-surface-border/30 space-y-1">
+                  ${extraFields.map(([k, v]) => `
+                    <div class="flex justify-between items-center text-[10px]">
+                      <span class="text-gray-500 font-mono">${k}:</span>
+                      <span class="text-gray-300 font-mono truncate max-w-[120px]">${String(v)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+            grid.appendChild(card);
+        });
+        lucide.createIcons();
+    }
+
+    // Modal Compétence
+    function openSkillModal(catKey = currentSkillCategoryKey, index = -1) {
+        const modal = document.getElementById('skillModal');
+        const title = document.getElementById('skillModalTitle');
+        const form = document.getElementById('skillForm');
+        form.reset();
+        document.getElementById('skillCustomFieldsContainer').innerHTML = '';
+
+        document.getElementById('skillIndex').value = index;
+        document.getElementById('skillCategory').value = catKey;
+        document.getElementById('skillCategory').disabled = (index !== -1); // Évite de changer de catégorie lors d'une modif
+
+        if (index !== -1) {
+            title.innerHTML = `<i data-lucide="pencil" class="w-4 h-4 text-brand-500"></i> Modifier la compétence`;
+            const skill = portfolioData.competences[catKey].liste[index];
+            document.getElementById('skillName').value = skill.nom || '';
+            document.getElementById('skillLogo').value = skill.chemin_logo || '';
+            document.getElementById('skillLevel').value = skill.maitrise !== undefined ? skill.maitrise : 0;
+            document.getElementById('skillLevelDisplay').innerText = `${document.getElementById('skillLevel').value} / 5`;
+            document.getElementById('skillProjectsCount').value = skill.nombre_projets !== undefined ? skill.nombre_projets : '';
+
+            // Charger champs additionnels
+            const standard = ['nom', 'chemin_logo', 'maitrise', 'nombre_projets'];
+            Object.entries(skill).forEach(([k, v]) => {
+                if (!standard.includes(k)) {
+                    addCustomSkillField(k, v);
+                }
+            });
+        } else {
+            title.innerHTML = `<i data-lucide="plus" class="w-4 h-4 text-brand-500"></i> Ajouter une compétence`;
+            document.getElementById('skillLevel').value = 5;
+            document.getElementById('skillLevelDisplay').innerText = "5 / 5";
+            document.getElementById('skillProjectsCount').value = 0;
+        }
+
+        updateSkillLogoPreview();
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+    }
+
+    function closeSkillModal() {
+        document.getElementById('skillModal').classList.add('hidden');
+    }
+
+    function editSkill(catKey, index) {
+        openSkillModal(catKey, index);
+    }
+
+    function deleteSkill(catKey, index) {
+        const skillName = portfolioData.competences[catKey].liste[index]?.nom || 'cette compétence';
+        if (confirm(`Confirmez-vous la suppression définitive de "${skillName}" ?`)) {
+            portfolioData.competences[catKey].liste.splice(index, 1);
+            saveStateToStorage();
+            initCategories();
+            renderSkills();
+            showToast(`"${skillName}" supprimée avec succès`);
+        }
+    }
+
+    function updateSkillLogoPreview() {
+        const logoInput = document.getElementById('skillLogo').value.trim();
+        const preview = document.getElementById('skillLogoPreview');
+        const fallback = document.getElementById('skillLogoFallback');
+        const hint = document.getElementById('skillLogoPathHint');
+
+        if (logoInput) {
+            preview.src = `public/illustrations/${logoInput}`;
+            preview.classList.remove('hidden');
+            fallback.classList.add('hidden');
+            hint.innerText = `public/illustrations/${logoInput}`;
+        } else {
+            preview.src = '';
+            preview.classList.add('hidden');
+            fallback.classList.remove('hidden');
+            hint.innerText = `public/illustrations/(aucun)`;
+        }
+    }
+
+    function addCustomSkillField(key = '', value = '') {
+        const container = document.getElementById('skillCustomFieldsContainer');
+        const row = document.createElement('div');
+        row.className = "flex items-center gap-2 animate-fade";
+        row.innerHTML = `
+        <input type="text" placeholder="Clé (ex: description, tag...)" value="${key}" class="custom-input p-2 rounded-xl text-xs text-gray-200 flex-1 font-mono skill-extra-key">
+        <input type="text" placeholder="Valeur" value="${value}" class="custom-input p-2 rounded-xl text-xs text-gray-200 flex-1 skill-extra-val">
+        <button type="button" onclick="this.parentElement.remove()" class="p-2 text-gray-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      `;
+        container.appendChild(row);
+        lucide.createIcons();
+    }
+
+    function saveSkill(e) {
+        e.preventDefault();
+        const catKey = document.getElementById('skillCategory').value;
+        const index = parseInt(document.getElementById('skillIndex').value, 10);
+        const name = document.getElementById('skillName').value.trim();
+        const logo = document.getElementById('skillLogo').value.trim();
+        const maitrise = parseInt(document.getElementById('skillLevel').value, 10);
+        const nbProjetsStr = document.getElementById('skillProjectsCount').value;
+
+        const skillObj = {};
+        if (name) skillObj.nom = name;
+        if (logo) skillObj.chemin_logo = logo;
+        if (!isNaN(maitrise) && maitrise > 0) skillObj.maitrise = maitrise;
+        if (nbProjetsStr !== '') skillObj.nombre_projets = parseInt(nbProjetsStr, 10) || 0;
+
+        // Récupérer les champs personnalisés
+        const keys = document.querySelectorAll('.skill-extra-key');
+        const vals = document.querySelectorAll('.skill-extra-val');
+        keys.forEach((keyInput, i) => {
+            const k = keyInput.value.trim();
+            const v = vals[i].value.trim();
+            if (k) {
+                // Conversion automatique si nombre ou booléen
+                if (v.toLowerCase() === 'true') skillObj[k] = true;
+                else if (v.toLowerCase() === 'false') skillObj[k] = false;
+                else if (!isNaN(Number(v)) && v !== '') skillObj[k] = Number(v);
+                else skillObj[k] = v;
+            }
+        });
+
+        if (!portfolioData.competences[catKey].liste) {
+            portfolioData.competences[catKey].liste = [];
+        }
+
+        if (index === -1) {
+            portfolioData.competences[catKey].liste.push(skillObj);
+            showToast(`Compétence "${name}" ajoutée.`);
+        } else {
+            portfolioData.competences[catKey].liste[index] = skillObj;
+            showToast(`Compétence "${name}" mise à jour.`);
+        }
+
+        saveStateToStorage();
+        closeSkillModal();
+        initCategories();
+        renderSkills();
+    }
+
+    // ==========================================
+    // MODULE: PROJETS
+    // ==========================================
+    function renderProjects() {
+        const container = document.getElementById('projectsList');
+        container.innerHTML = '';
+
+        if (!portfolioData.projets || !portfolioData.projets.liste) {
+            portfolioData.projets = { titre: "Mes projets", liste: [] };
+        }
+
+        let projects = [...portfolioData.projets.liste];
+        document.getElementById('projectsHeaderTitle').innerText = portfolioData.projets.titre || "Mes projets";
+        document.getElementById('projectsCountBadge').innerText = projects.length;
+
+        const search = document.getElementById('projectSearch').value.toLowerCase().trim();
+        const sort = document.getElementById('projectSort').value;
+
+        // Filtre
+        if (search) {
+            projects = projects.filter(p => {
+                const inName = p.nom && p.nom.toLowerCase().includes(search);
+                const inDesc = p.description && p.description.toLowerCase().includes(search);
+                const inSkills = Array.isArray(p.competences) && p.competences.some(c => c.toLowerCase().includes(search));
+                return inName || inDesc || inSkills;
+            });
+        }
+
+        // Tri
+        if (sort === 'name-asc') projects.sort((a,b) => (a.nom||'').localeCompare(b.nom||''));
+        else if (sort === 'name-desc') projects.sort((a,b) => (b.nom||'').localeCompare(a.nom||''));
+        else if (sort === 'date-desc') projects.sort((a,b) => (b.dateDebut||'').localeCompare(a.dateDebut||''));
+        else if (sort === 'date-asc') projects.sort((a,b) => (a.dateDebut||'').localeCompare(b.dateDebut||''));
+
+        if (projects.length === 0) {
+            container.innerHTML = `
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-gray-500 text-xs">
+            <i data-lucide="inbox" class="w-8 h-8 mb-2 stroke-1"></i>
+            Aucun projet ne correspond à vos critères.
+          </div>
+        `;
+            lucide.createIcons();
+            return;
+        }
+
+        projects.forEach((proj) => {
+            const originalIndex = portfolioData.projets.liste.indexOf(proj);
+            const card = document.createElement('div');
+            card.className = "bg-surface-card border border-surface-border rounded-2xl p-5 glow-hover transition-all duration-200 flex flex-col justify-between group";
+
+            const images = Array.isArray(proj.images) ? proj.images : [];
+            const competences = Array.isArray(proj.competences) ? proj.competences : [];
+
+            card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <h3 class="text-base font-semibold text-gray-100 group-hover:text-brand-400 transition">${proj.nom || 'Projet sans nom'}</h3>
+                ${(proj.dateDebut || proj.dateFin) ? `
+                  <p class="text-xs text-gray-500 font-mono mt-0.5 flex items-center gap-1.5">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-gray-400"></i>
+                    ${proj.dateDebut || '?'} &rarr; ${proj.dateFin || 'Présent'}
+                  </p>
+                ` : ''}
+              </div>
+
+              <div class="flex items-center gap-1">
+                <button onclick="editProject(${originalIndex})" title="Modifier" class="p-1.5 text-gray-400 hover:text-white hover:bg-surface-hover rounded-lg transition">
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteProject(${originalIndex})" title="Supprimer" class="p-1.5 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <p class="text-xs text-gray-400 leading-relaxed mb-4 line-clamp-3">${proj.description || '<em class="text-gray-600">Aucune description fournie</em>'}</p>
+
+            <!-- Tags Compétences -->
+            ${competences.length > 0 ? `
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                ${competences.map(c => `
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-surface-base border border-surface-border text-emerald-400">
+                    ${c}
+                  </span>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Galerie d'images miniatures -->
+            ${images.length > 0 ? `
+              <div class="pt-3 border-t border-surface-border/50">
+                <p class="text-[11px] font-medium text-gray-400 mb-2 flex items-center gap-1.5">
+                  <i data-lucide="image" class="w-3.5 h-3.5 text-gray-500"></i>
+                  ${images.length} illustration(s) dans <code class="font-mono text-gray-500">public/projets/</code>
+                </p>
+                <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                  ${images.map(img => `
+                    <div class="relative w-16 h-12 rounded-lg bg-surface-base border border-surface-border overflow-hidden shrink-0 group/img" title="${img}">
+                      <img src="public/projets/${img}" alt="${img}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center text-[9px] font-mono text-gray-500 p-1 truncate\\'>${img}</div>'">
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+            container.appendChild(card);
+        });
+        lucide.createIcons();
+    }
+
+    // Modal Projet
+    function openProjectModal(index = -1) {
+        const modal = document.getElementById('projectModal');
+        const title = document.getElementById('projectModalTitle');
+        const form = document.getElementById('projectForm');
+        form.reset();
+        currentProjectTags = [];
+
+        document.getElementById('projectIndex').value = index;
+        document.getElementById('projectImagesList').innerHTML = '';
+
+        if (index !== -1) {
+            title.innerHTML = `<i data-lucide="pencil" class="w-4 h-4 text-brand-500"></i> Modifier le projet`;
+            const proj = portfolioData.projets.liste[index];
+            document.getElementById('projectName').value = proj.nom || '';
+            document.getElementById('projectDateDebut').value = proj.dateDebut || '';
+            document.getElementById('projectDateFin').value = proj.dateFin || '';
+            document.getElementById('projectDescription').value = proj.description || '';
+
+            currentProjectTags = Array.isArray(proj.competences) ? [...proj.competences] : [];
+            if (Array.isArray(proj.images)) {
+                proj.images.forEach(img => addImageToProjectField(img));
+            }
+        } else {
+            title.innerHTML = `<i data-lucide="plus" class="w-4 h-4 text-brand-500"></i> Nouveau projet`;
+            addImageToProjectField(); // Une ligne par défaut
+        }
+
+        renderProjectTags();
+        renderTagSuggestions();
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+    }
+
+    function closeProjectModal() {
+        document.getElementById('projectModal').classList.add('hidden');
+    }
+
+    function editProject(index) {
+        openProjectModal(index);
+    }
+
+    function deleteProject(index) {
+        const projName = portfolioData.projets.liste[index]?.nom || 'ce projet';
+        if (confirm(`Confirmez-vous la suppression du projet "${projName}" ?`)) {
+            portfolioData.projets.liste.splice(index, 1);
+            saveStateToStorage();
+            renderProjects();
+            showToast(`Projet "${projName}" supprimé`);
+        }
+    }
+
+    // Gestion des tags de projet
+    function renderProjectTags() {
+        const container = document.getElementById('projectTagsContainer');
+        const input = document.getElementById('projectTagInput');
+
+        // Retirer les tags existants sauf l'input
+        const existingTags = container.querySelectorAll('.project-tag-pill');
+        existingTags.forEach(el => el.remove());
+
+        currentProjectTags.forEach((tag, idx) => {
+            const pill = document.createElement('span');
+            pill.className = "project-tag-pill px-2 py-0.5 rounded-md text-xs bg-brand-500/10 text-brand-400 border border-brand-500/30 flex items-center gap-1";
+            pill.innerHTML = `
+          <span>${tag}</span>
+          <button type="button" onclick="removeProjectTag(${idx})" class="hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
+        `;
+            container.insertBefore(pill, input);
+        });
+        lucide.createIcons();
+    }
+
+    function removeProjectTag(idx) {
+        currentProjectTags.splice(idx, 1);
+        renderProjectTags();
+    }
+
+    function renderTagSuggestions() {
+        const container = document.getElementById('quickAddTagsContainer');
+        container.querySelectorAll('.suggestion-pill').forEach(el => el.remove());
+
+        // Collecter toutes les technos connues
+        const knownSkills = new Set();
+        if (portfolioData.competences) {
+            Object.entries(portfolioData.competences).forEach(([k, v]) => {
+                if (k !== 'titre' && v.liste) {
+                    v.liste.forEach(s => s.nom && knownSkills.add(s.nom));
+                }
+            });
+        }
+
+        const available = Array.from(knownSkills).filter(s => !currentProjectTags.includes(s)).slice(0, 7);
+        available.forEach(skill => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = "suggestion-pill text-[10px] px-1.5 py-0.5 rounded bg-surface-base border border-surface-border text-gray-400 hover:text-brand-400 hover:border-brand-500/30 transition";
+            btn.innerText = `+ ${skill}`;
+            btn.onclick = () => {
+                currentProjectTags.push(skill);
+                renderProjectTags();
+                renderTagSuggestions();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function addImageToProjectField(filename = '') {
+        const container = document.getElementById('projectImagesList');
+        const row = document.createElement('div');
+        row.className = "flex items-center gap-2 animate-fade";
+        row.innerHTML = `
+        <div class="relative flex-1">
+          <input type="text" placeholder="ex: lightness-preview.jpg" value="${filename}" class="custom-input w-full p-2 rounded-xl text-xs text-gray-200 font-mono project-image-input" oninput="updateProjectPreviewRow(this)">
+        </div>
+        <div class="w-8 h-8 rounded-lg bg-surface-base border border-surface-border overflow-hidden shrink-0 flex items-center justify-center">
+          <img src="public/projets/${filename}" class="w-full h-full object-cover ${filename ? '' : 'hidden'}" onerror="this.classList.add('hidden')">
+          <i data-lucide="image" class="w-4 h-4 text-gray-600 ${filename ? 'hidden' : ''}"></i>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="p-2 text-gray-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      `;
+        container.appendChild(row);
+        lucide.createIcons();
+    }
+
+    function updateProjectPreviewRow(input) {
+        const row = input.closest('div.flex');
+        const img = row.querySelector('img');
+        const icon = row.querySelector('i');
+        const val = input.value.trim();
+
+        if (val) {
+            img.src = `public/projets/${val}`;
+            img.classList.remove('hidden');
+            if (icon) icon.classList.add('hidden');
+        } else {
+            img.classList.add('hidden');
+            if (icon) icon.classList.remove('hidden');
+        }
+    }
+
+    function saveProject(e) {
+        e.preventDefault();
+        const index = parseInt(document.getElementById('projectIndex').value, 10);
+        const nom = document.getElementById('projectName').value.trim();
+        const dateDebut = document.getElementById('projectDateDebut').value.trim();
+        const dateFin = document.getElementById('projectDateFin').value.trim();
+        const description = document.getElementById('projectDescription').value.trim();
+
+        // Collecte des images
+        const images = [];
+        document.querySelectorAll('.project-image-input').forEach(input => {
+            const val = input.value.trim();
+            if (val) images.push(val);
+        });
+
+        const projObj = {
+            nom,
+            description,
+            ...(dateDebut && { dateDebut }),
+            ...(dateFin && { dateFin }),
+            competences: currentProjectTags,
+            images
+        };
+
+        if (!portfolioData.projets.liste) portfolioData.projets.liste = [];
+
+        if (index === -1) {
+            portfolioData.projets.liste.push(projObj);
+            showToast(`Projet "${nom}" créé`);
+        } else {
+            portfolioData.projets.liste[index] = projObj;
+            showToast(`Projet "${nom}" mis à jour`);
+        }
+
+        saveStateToStorage();
+        closeProjectModal();
+        renderProjects();
+    }
+
+    // ==========================================
+    // MODULE: RAW JSON & EXPORT/IMPORT
+    // ==========================================
+    function setupEventListeners() {
+        // Input Logo temps réel
+        document.getElementById('skillLogo').addEventListener('input', updateSkillLogoPreview);
+
+        // Slider Maîtrise
+        document.getElementById('skillLevel').addEventListener('input', (e) => {
+            const val = e.target.value;
+            document.getElementById('skillLevelDisplay').innerText = val === '0' ? 'Non défini' : `${val} / 5`;
+        });
+
+        // Tags Projet Input
+        const tagInput = document.getElementById('projectTagInput');
+        tagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const val = tagInput.value.replace(',', '').trim();
+                if (val && !currentProjectTags.includes(val)) {
+                    currentProjectTags.push(val);
+                    tagInput.value = '';
+                    renderProjectTags();
+                    renderTagSuggestions();
+                }
+            }
+        });
+
+        // Filtres Compétences
+        document.getElementById('skillSearch').addEventListener('input', renderSkills);
+        document.getElementById('skillSort').addEventListener('change', renderSkills);
+
+        // Filtres Projets
+        document.getElementById('projectSearch').addEventListener('input', renderProjects);
+        document.getElementById('projectSort').addEventListener('change', renderProjects);
+
+        // Modal JSON Brut
+        document.getElementById('btnRawJson').addEventListener('click', () => {
+            document.getElementById('rawJsonTextarea').value = JSON.stringify(portfolioData, null, 2);
+            document.getElementById('rawJsonModal').classList.remove('hidden');
+        });
+
+        // Copier JSON
+        document.getElementById('btnCopyJson').addEventListener('click', () => {
+            const val = document.getElementById('rawJsonTextarea').value;
+            navigator.clipboard.writeText(val).then(() => {
+                showToast('JSON copié dans le presse-papier !');
+            });
+        });
+
+        // Exporter
+        document.getElementById('btnExport').addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(portfolioData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fr.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Téléchargement de fr.json lancé');
+        });
+
+        // Importer
+        document.getElementById('importInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const parsed = JSON.parse(event.target.result);
+                    portfolioData = parsed;
+                    saveStateToStorage();
+                    initCategories();
+                    renderSkills();
+                    renderProjects();
+                    showToast('fr.json importé et synchronisé avec succès');
+                } catch (err) {
+                    alert('Fichier JSON invalide. Veuillez vérifier sa syntaxe.');
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    function closeRawJsonModal() {
+        document.getElementById('rawJsonModal').classList.add('hidden');
+    }
+
+    function applyRawJsonChanges() {
+        try {
+            const text = document.getElementById('rawJsonTextarea').value;
+            const parsed = JSON.parse(text);
+            portfolioData = parsed;
+            saveStateToStorage();
+            initCategories();
+            renderSkills();
+            renderProjects();
+            closeRawJsonModal();
+            showToast('Modifications JSON appliquées avec succès');
+        } catch (err) {
+            alert('Erreur de syntaxe JSON : ' + err.message);
+        }
+    }
+</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import Anm from "@/app/components/Animator3000";
 import DynBg from "@/app/components/DynamicBackground";
 import Competences from "@/app/components/Competences";
 import LayoutContainer from "@/app/components/LayoutContainer";
+import ResizeGroup from "@/app/components/ResizeGroup";
 
 interface Props {
     params: Promise<{ lang: Locale }>;
@@ -26,11 +27,11 @@ export default async function Home({params}: Props) {
                 </Anm>
             </div>
 
-            <div id={"content"} className={"sm:px-16 py-16 sm:py-32 px-4 w-full flex sm:flex-row flex-col items-center justify-center gap-16"}>
+            <div id={"content"} className={"sm:px-16 py-5 sm:py-16 px-4 w-full flex sm:flex-row flex-col items-center justify-center gap-16"}>
 
                 <div>
                     <Anm scale={0}>
-                        <Image alt={"profile"} src={"/me.png"} width={500} height={500} className={"rounded-full"} />
+                        <Image alt={"profile"} src={"/me.png"} width={500} height={500} className={" rounded-full"} />
                     </Anm>
                 </div>
                 <div className={"flex flex-col gap-6"}>
@@ -45,15 +46,31 @@ export default async function Home({params}: Props) {
 
             </div>
 
-            <div id={"code"} className={"sm:px-16 mt-32 px-4 w-full flex flex-col gap-16"}>
+            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-10 sm:gap-16"}>
                 <Anm>
                     <h1 className={"text-background text-4xl sm:text-7xl"}>{dict.competences.titre}</h1>
                 </Anm>
-                <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
-                <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
-                <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
-                <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
+                <ResizeGroup>
+                    <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
+                    <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
+                    <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
+                    <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
 
+                </ResizeGroup>
+
+            </div>
+
+            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-10 sm:gap-16"}>
+                <Anm>
+                    <h1 className={"text-background text-4xl sm:text-7xl"}>{dict.competences.titre}</h1>
+                </Anm>
+                <ResizeGroup>
+                    <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
+                    <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
+                    <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
+                    <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
+
+                </ResizeGroup>
 
             </div>
 
