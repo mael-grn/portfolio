@@ -1,84 +1,77 @@
 "use client";
 
 import { Competence } from "@/app/modeles";
-import Anm from "@/app/components/Animator3000";
-import { useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import CompetenceComp from "@/app/components/Competence";
+import { useEffect, useRef, useState } from "react";
+import Anm from "@/app/components/Animator3000";
 
-export default function Competences({
-                                        titre,
-                                        elements,
-                                    }: {
-    titre: string;
-    elements: Competence[];
-}) {
-    const [deploye, setDeploye] = useState<boolean>(false);
+export default function Competences({titre, elements}: { titre: string; elements: Competence[]; }) {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const isPaused = useRef(false);
+
+    const [iterations, setIterations] = useState(2);
+    const isAdding = useRef(false);
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        let animationFrameId: number;
+
+        const autoScroll = () => {
+            if (!isPaused.current && el) {
+                el.scrollLeft += 1.5;
+
+                const seuilFin = 300;
+                if (
+                    !isAdding.current &&
+                    el.scrollLeft + el.clientWidth >= el.scrollWidth - seuilFin
+                ) {
+                    isAdding.current = true;
+                    setIterations((prev) => prev + 1);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(autoScroll);
+        };
+
+        animationFrameId = requestAnimationFrame(autoScroll);
+
+        return () => cancelAnimationFrame(animationFrameId);
+    }, []);
+
+    useEffect(() => {
+        isAdding.current = false;
+    }, [iterations]);
 
     return (
-        // 💡 Ici : motion.div avec la prop layout sur la racine
-        <motion.div
-            layout
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col gap-3"
-        >
-            <Anm>
-                <h2 className="text-background text-2xl sm:text-4xl">{titre}</h2>
-            </Anm>
-
+        <Anm y={0} x={200}>
             <motion.div
+                ref={scrollRef}
                 layout
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className={`flex sm:gap-10 gap-6 ${
-                    deploye ? "flex-wrap overflow-x-visible" : "flex-row overflow-x-auto scrollbar-none"
-                } max-w-full overflow-y-hidden py-2`}
+                className="flex sm:gap-10 gap-6 flex-row overflow-x-auto scrollbar-none max-w-full overflow-y-hidden py-2"
             >
-                {elements.map((c, i) => (
-                    <motion.div layout key={c.nom || i} className="flex gap-4 min-w-fit">
-                        <Image
-                            src={`/illustrations/${c.chemin_logo}`}
-                            alt={c.nom}
-                            width={56}
-                            height={56}
-                            className="sm:w-14 sm:h-14 h-8 w-8 rounded-sm sm:rounded-xl object-contain"
+                <div className="sticky left-0 h-20 z-10 flex shrink-0 items-center">
+                    <div className="flex h-full items-center bg-linear-to-l from-transparent to-foreground pl-4 pr-16 backdrop-blur [mask-image:linear-gradient(to_right,black_calc(100%-4rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-4rem),transparent)]">
+                        <code className="text-background whitespace-nowrap text-xl sm:text-2xl">
+                            {titre}
+                        </code>
+                    </div>
+                </div>
+
+
+                {Array.from({ length: iterations }).map((_, batchIndex) =>
+                    elements.map((c, i) => (
+                        <CompetenceComp
+                            key={`batch-${batchIndex}-${c.nom || i}`}
+                            c={c}
                         />
+                    ))
+                )}
+                <div className="sticky right-0 z-10 h-full min-h-[60px] w-12 sm:w-20 shrink-0 pointer-events-none bg-gradient-to-r from-transparent to-foreground" />
 
-                        <div className="flex flex-col">
-                            <h3 className="sm:text-lg text-sm mb-0 text-background">{c.nom}</h3>
-                            <div className="flex gap-1">
-                                {Array.from({ length: c.maitrise }, (_, index) => (
-                                    <img
-                                        key={index}
-                                        src="/full-star.svg"
-                                        alt="étoile"
-                                        width={12}
-                                        height={12}
-                                        className="invert w-3 h-3"
-                                    />
-                                ))}
-                            </div>
-                            <code className="px-2 mt-2 py-0 w-fit bg-background/10 text-xs rounded-full">
-                                {c.nombre_projets} Projets
-                            </code>
-                        </div>
-                    </motion.div>
-                ))}
             </motion.div>
-
-            <button
-                type="button"
-                className="text-background sm:mt-2 bg-background/10 active:scale-95 transition-transform sm:px-3 sm:py-2 px-2 py-1 sm:w-fit w-full flex items-center justify-center gap-2 rounded-xl cursor-pointer"
-                onClick={() => setDeploye((prev) => !prev)}
-            >
-                <motion.img
-                    animate={{ rotate: deploye ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    src="/arrow.svg"
-                    alt="arrow"
-                    className="sm:w-5 w-4 invert"
-                />
-                {deploye ? "Réduire" : "Tout afficher"}
-            </button>
-        </motion.div>
+        </Anm>
     );
 }

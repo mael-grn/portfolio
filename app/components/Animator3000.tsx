@@ -29,7 +29,6 @@ export default function Anm({delay = 0, x = 0, y = 60, scale = 1, children, clas
                 delay: delay
             }}
             initial={{opacity: 0, y: y, x: x, scale: scale}}
-            viewport={{ once: true}}
             whileInView={{
                 opacity: 1, y: 0, x: 0, scale: 1
             }}

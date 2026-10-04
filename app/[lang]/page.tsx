@@ -50,27 +50,16 @@ export default async function Home({params}: Props) {
                 <Anm>
                     <h1 className={"text-background text-4xl sm:text-7xl"}>{dict.competences.titre}</h1>
                 </Anm>
-                <ResizeGroup>
-                    <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
-                    <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
-                    <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
-                    <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
+                <div className={"flex flex-col gap-0"}>
+                    <ResizeGroup>
+                        <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
+                        <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
+                        <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
+                        <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
 
-                </ResizeGroup>
+                    </ResizeGroup>
+                </div>
 
-            </div>
-
-            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-10 sm:gap-16"}>
-                <Anm>
-                    <h1 className={"text-background text-4xl sm:text-7xl"}>{dict.competences.titre}</h1>
-                </Anm>
-                <ResizeGroup>
-                    <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
-                    <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
-                    <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
-                    <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
-
-                </ResizeGroup>
 
             </div>
 
