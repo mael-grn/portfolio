@@ -46,32 +46,34 @@ export default function Competences({titre, elements}: { titre: string; elements
     }, [iterations]);
 
     return (
-        <Anm y={0} x={200}>
-            <motion.div
-                ref={scrollRef}
-                layout
-                className="flex sm:gap-10 gap-6 flex-row overflow-x-auto scrollbar-none max-w-full overflow-y-hidden py-2"
-            >
-                <div className="sticky left-0 h-20 z-10 flex shrink-0 items-center">
-                    <div className="flex h-full items-center bg-linear-to-l from-transparent to-foreground pl-4 pr-16 backdrop-blur [mask-image:linear-gradient(to_right,black_calc(100%-4rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-4rem),transparent)]">
-                        <code className="text-background whitespace-nowrap text-xl sm:text-2xl">
-                            {titre}
-                        </code>
+        <div className={"overflow-hidden"}>
+            <Anm y={0} x={200}>
+                <motion.div
+                    ref={scrollRef}
+                    layout
+                    className="flex sm:gap-10 gap-6 flex-row overflow-x-auto scrollbar-none max-w-full overflow-y-hidden py-2"
+                >
+                    <div className="sticky left-0 h-20 z-10 flex shrink-0 items-center">
+                        <div className="flex h-full items-center bg-linear-to-l from-transparent to-foreground pl-4 pr-16 backdrop-blur [mask-image:linear-gradient(to_right,black_calc(100%-4rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-4rem),transparent)]">
+                            <code className="text-background whitespace-nowrap text-xl sm:text-2xl">
+                                {titre}
+                            </code>
+                        </div>
                     </div>
-                </div>
 
 
-                {Array.from({ length: iterations }).map((_, batchIndex) =>
-                    elements.map((c, i) => (
-                        <CompetenceComp
-                            key={`batch-${batchIndex}-${c.nom || i}`}
-                            c={c}
-                        />
-                    ))
-                )}
-                <div className="sticky right-0 z-10 h-full min-h-[60px] w-12 sm:w-20 shrink-0 pointer-events-none bg-gradient-to-r from-transparent to-foreground" />
+                    {Array.from({ length: iterations }).map((_, batchIndex) =>
+                        elements.map((c, i) => (
+                            <CompetenceComp
+                                key={`batch-${batchIndex}-${c.nom || i}`}
+                                c={c}
+                            />
+                        ))
+                    )}
+                    <div className="sticky right-0 z-10 h-full min-h-[60px] w-12 sm:w-20 shrink-0 pointer-events-none bg-gradient-to-r from-transparent to-foreground" />
 
-            </motion.div>
-        </Anm>
+                </motion.div>
+            </Anm>
+        </div>
     );
 }
