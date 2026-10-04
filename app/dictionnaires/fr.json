@@ -10,8 +10,12 @@
       "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets."
     }
   },
+  "dev": {
+    "titre": "Développement traditionnel ou agentique, je suis expert partout",
+    "description": "Fort de compétences acquises à l'université, en entreprise et dans des projets personnels, je suis à l'aise dans n'importe quelle forme de développement. Que ce soit pour manuellement développer et entrenir une base de code propre, ou piloter des agents de manière efficace, rien n'a de secrets pour moi."
+  },
   "projets": {
-    "titre": "Mes projets",
+    "titre": "Ce que j'ai fait",
     "liste": [
       {
         "nom": "Lightness Duo",
@@ -29,7 +33,7 @@
     ]
   },
   "competences": {
-    "titre": "Mes compétences",
+    "titre": "Ce que je maîtrise",
     "programmation": {
       "titre": "Programmation",
       "liste": [

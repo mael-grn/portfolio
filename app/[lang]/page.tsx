@@ -6,6 +6,7 @@ import DynBg from "@/app/components/DynamicBackground";
 import Competences from "@/app/components/Competences";
 import LayoutContainer from "@/app/components/LayoutContainer";
 import ResizeGroup from "@/app/components/ResizeGroup";
+import {Bubble, BubbleContainer} from "@/app/components/BubbleAnimaned";
 
 interface Props {
     params: Promise<{ lang: Locale }>;
@@ -46,20 +47,76 @@ export default async function Home({params}: Props) {
 
             </div>
 
-            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-10 sm:gap-16"}>
-                <Anm>
-                    <h1 className={"text-background text-4xl sm:text-7xl"}>{dict.competences.titre}</h1>
+            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-10 sm:gap-32"}>
+                <Anm delay={0.1}>
+                    <h2 className={"text-background sm:text-5xl text-2xl text-center font-bold"}>{dict.dev.titre}</h2>
                 </Anm>
-                <div className={"flex flex-col gap-0"}>
+
+                <div className={"flex gap-12 justify-center sm:flex-row flex-col items-center w-full"}>
+
+                    <Anm scale={0} y={0}>
+                        <BubbleContainer className={"w-72 h-72"}>
+                            <Bubble size={100}>
+                                <Image
+                                    src={"/gemini.webp"}
+                                    alt={"gemini"}
+                                    width={100}
+                                    height={100}
+                                    className={"pointer-events-none select-none rounded-full object-cover"}
+                                />
+                            </Bubble>
+                            <Bubble size={100}>
+                                <Image
+                                    src={"/claude.webp"}
+                                    alt={"claude"}
+                                    width={100}
+                                    height={100}
+                                    className={"pointer-events-none select-none rounded-full object-cover"}
+                                />
+                            </Bubble>
+                            <Bubble size={100}>
+                                <Image
+                                    src={"/chatgpt.jpg"}
+                                    alt={"gpt"}
+                                    width={100}
+                                    height={100}
+                                    className={"pointer-events-none select-none rounded-full object-cover"}
+                                />
+                            </Bubble>
+                        </BubbleContainer>
+                    </Anm>
+
+                    <Anm y={0} scale={0} delay={0.2}>
+                        <code className={"text-9xl"}>
+                            +
+                        </code>
+                    </Anm>
+
+
+                    <Anm scale={0} y={0} delay={0.2}>
+                        <Image alt={"profile"} src={"/me.png"} width={500} height={500} className={"object-contain w-72 h-72 rounded-full"} />
+                    </Anm>
+                </div>
+            </div>
+
+            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-6"}>
+                <Anm>
+                    <h1 className={"text-background text-2xl sm:text-5xl"}>{dict.competences.titre}</h1>
+                </Anm>
+                <div className={"flex flex-col gap-0 p-2 rounded-lg bg-foreground"}>
                     <ResizeGroup>
                         <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
                         <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
                         <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
                         <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
-
                     </ResizeGroup>
                 </div>
+            </div>
 
+            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-6"}>
+                <Anm>
+                    <h1 className={"text-background text-2xl sm:text-5xl"}>{dict.projets.titre}</h1>
+                </Anm>
 
             </div>
 
