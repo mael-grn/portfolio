@@ -17,6 +17,7 @@
     "@vercel/blob": "^2.8.1",
     "framer-motion": "^13.1.1",
     "jose": "^6.2.12",
+    "local-ssl-proxy": "^2.0.5",
     "matter-js": "^0.20.0",
     "negotiator": "^1.1.0",
     "next": "16.3.1",
