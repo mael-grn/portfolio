@@ -13,10 +13,11 @@ Accessible en `/fr` et `/en` (redirection automatique depuis `/`).
 | **Projets** | `#code` | Grille bento adaptative (`ProjectComp`) selon la taille de chaque projet (1 à 4). Données issues de la table `projet` avec compétences associées et images stockées sur Vercel Blob. |
 | **Parcours** | `#code` | Timeline chronologique progressive liée au défilement (`TimeLine`). Données issues de la table `experience` de Neon. |
 
-### Animations
-Toutes les animations sont pilotées par **framer-motion** :
-- Révélation d'éléments avec le composant `Anm` (`Animator3000`) et son easing `[0.16, 1, 0.3, 1]`.
-- Fond dynamique asservi à la position de défilement (`DynamicBackground`).
+### Animations & Charte Graphique
+Le design et l'identité visuelle sont régis par [`DESIGN.md`](../DESIGN.md) (*High-Altitude Engineering*).
+Toutes les animations sont pilotées exclusivement par **framer-motion** :
+- Révélation d'éléments avec le composant `Anm` (`Animator3000`) et son easing caractéristique `[0.16, 1, 0.3, 1]`.
+- Fond dynamique asservi à la position de défilement (`DynamicBackground`) : passage progressif de l'image de haute montagne (`/hero.jpeg`) au canevas minéral clair (`--background`), puis plongée dans la salle sombre de code (`--foreground`).
 - Défilement continu horizontal des logos de compétences (`Competences`).
 - Ligne verticale de la timeline qui s'étire en fonction du scroll (`useScroll` + `useSpring`).
 - Physique interactive des bulles avec matter-js (`BubbleAnimaned`).

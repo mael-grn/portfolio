@@ -11,6 +11,7 @@
 
 ## Arborescence
 ```
+DESIGN.md                     Charte graphique et de style de référence (Alpine Engineering, tokens, animations framer-motion)
 proxy.ts                      Détection de la langue du navigateur et redirection vers /{locale}
 db/
   schema.sql                  Schéma relationnel PostgreSQL (tables: competence, projet, projet_traduction, projet_competence, projet_image, experience, experience_traduction)

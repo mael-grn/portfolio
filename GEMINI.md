@@ -24,6 +24,7 @@ Portfolio personnel bilingue **fr / en** (en construction permanente et évoluti
 ## 2. Architecture du projet
 
 ```
+DESIGN.md                         # Charte graphique et style de référence (Alpine Engineering, tokens, animations framer-motion)
 proxy.ts                          # Détection de langue (Accept-Language) et redirection vers /{locale}
 db/
   schema.sql                      # Schéma PostgreSQL (tables: competence, projet, projet_traduction, projet_competence, projet_image, experience, experience_traduction)
@@ -77,6 +78,11 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 ## 3. Règles strictes de style et d'animations
 
+- **CHARTE GRAPHIQUE OFFICIELLE (`DESIGN.md`) :**
+  - Tout développement UI, choix de typographie, espacement, découpe géométrique et composant visuel **doit impérativement respecter la charte graphique définie dans [`DESIGN.md`](DESIGN.md)** (*High-Altitude Engineering / Alpine precision & software engineering monolith on mineral slate*).
+  - Couleurs strictement limitées à celles déclarées dans `globals.css` et leurs surfaces coordonnées dans `DESIGN.md`.
+  - Image de landing immuable : `/hero.jpeg` (Maël en haute montagne).
+  - Zéro ombre diffuse (`shadow-*`), zéro dégradé flou, surfaces planes avec découpes géométriques (notched 45°, capsules pill 28.8px, hexagones télémétriques, cercles parfaits).
 - **JAMAIS DE CSS PUR, TOUJOURS DU TAILWIND.**
   - Tout le style passe par les classes utilitaires Tailwind.
   - Aucun fichier `.css` supplémentaire, aucun module CSS, aucune balise `<style>`, aucun attribut `style={{...}}` (sauf contrainte technique absolue impossible en Tailwind, ex. style branché à un `MotionValue` framer-motion).
@@ -210,6 +216,7 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 ## 12. Checklist avant de conclure une tâche
 
+- [ ] Respect strict de la charte graphique [`DESIGN.md`](DESIGN.md) (typographies, échelle, surfaces, pas d'ombres diffuses).
 - [ ] Contenu rendu côté serveur (SSG / SSR) et indexable.
 - [ ] Zéro CSS pur ; zéro animation CSS/Tailwind (framer-motion uniquement).
 - [ ] Modèles séparés dans `app/modeles/*.ts`.
