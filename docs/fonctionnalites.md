@@ -48,8 +48,17 @@ Interface d'administration complète permettant de créer, modifier et supprimer
 - Édition multilingue : intitulé, lieu/organisme, et description en français et en anglais.
 - Suppression avec confirmation sécurisée.
 
-### D. Sécurité & Performance de l'admin
-- Les routes `/admin` sont exclues des moteurs de recherche (`X-Robots-Tag: noindex, nofollow, noarchive`).
-- Le cache navigateur est désactivé (`Cache-Control: no-store`).
-- Point unique d'authentification (`app/lib/admin-auth.ts`) rejetant les accès en production tant que le système d'authentification n'est pas déployé.
-- Server Actions validées par Zod et protégées contre les attaques CSRF par les mécanismes natifs de Next.js.
+### D. Sécurité & Système de connexion globale (`account.maelg.fr`)
+- **Authentification centralisée** : connexion via la plateforme `https://account.maelg.fr/login`.
+- **Validation cryptographique** : contrôle du JWT signé avec `JWT_SECRET` via `TokenUtil` et la bibliothèque `jose`.
+- **Autorisation relationnelle** : vérification en base Neon que l'identifiant extrait du token est enregistré dans la table `authorized` (`SELECT id FROM authorized WHERE id = ${id}`).
+- **Gestion des accès** :
+  - Pas de token ou token invalide : redirection vers `account.maelg.fr` avec conservation de l'URL cible (`redirect=...`).
+  - Token valide mais ID non autorisé en base : redirection vers la page dédiée `/no`.
+  - Commande CLI pour gérer les administrateurs : `pnpm db:authorize list|add|remove`.
+- **Défense en profondeur** :
+  - Filtrage réseau au niveau de `proxy.ts`.
+  - Double vérification côté serveur dans `app/lib/admin-auth.ts` (`assertAdmin`, `exigerAdmin`) pour bloquer tout appel direct aux Server Actions.
+- **Protection des en-têtes** :
+  - Routes `/admin` exclues des robots (`X-Robots-Tag: noindex, nofollow, noarchive`).
+  - Cache navigateur désactivé (`Cache-Control: no-store`).

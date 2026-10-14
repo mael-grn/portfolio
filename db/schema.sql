@@ -73,4 +73,10 @@ CREATE TABLE IF NOT EXISTS experience_traduction (
     lieu          text NOT NULL DEFAULT '' CHECK (char_length(lieu) <= 160),
     description   text NOT NULL DEFAULT '' CHECK (char_length(description) <= 5000),
     PRIMARY KEY (experience_id, lang)
-)
+);
+
+CREATE TABLE IF NOT EXISTS authorized (
+    id          text PRIMARY KEY,
+    nom         text,
+    created_at  timestamptz NOT NULL DEFAULT now()
+);

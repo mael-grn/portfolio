@@ -130,13 +130,23 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 ---
 
-## 7. Espace d'administration (`/admin`)
+## 7. Espace d'administration (`/admin`) et Sécurité globale
 
-- Route dédiée pour éditer l'ensemble du portfolio : `/admin/competences`, `/admin/projets`, `/admin/experiences`.
-- Protégé via `app/lib/admin-auth.ts` :
-  - En production, accès conditionné (404 immédiat si non autorisé).
-  - Point de vérification unique prêt pour y brancher un système d'authentification complet.
-- Formulaires réactifs utilisant React 19 (`useActionState`, `useTransition`) et Server Actions Next.js.
+- **Système d'authentification globale (`account.maelg.fr`)** :
+  - Connexion centralisée sur `https://account.maelg.fr/login`.
+  - Jeton JWT signé avec la clé partagée `JWT_SECRET` (variable d'environnement).
+  - Validation cryptographique via `TokenUtil` ([app/lib/token.ts](file:///home/mael/Dev/portfolio/app/lib/token.ts)) avec la librairie `jose`.
+  - Table Neon `authorized` (`id text PRIMARY KEY, nom text, created_at timestamptz`) vérifiant que l'identifiant extrait du token possède explicitement les droits d'administration.
+  - Gestion CLI des administrateurs autorisés : `pnpm db:authorize list|add|remove`.
+- **Défense en profondeur (2 niveaux)** :
+  1. **Niveau Middleware / Proxy (`proxy.ts`)** :
+     - Si aucun jeton n'est présent ou s'il est invalide : redirection vers `https://account.maelg.fr/login?redirect=<url_cible>`.
+     - Si le jeton est valide mais que l'ID n'est pas dans la table `authorized` : redirection immédiate vers `/no`.
+  2. **Niveau Serveur & Server Actions (`app/lib/admin-auth.ts`)** :
+     - `assertAdmin()` contrôle le cookie `token`, sa signature et les droits en base avant toute exécution de Server Action.
+     - `exigerAdmin()` protège le rendu des Server Components d'administration.
+- **Exclusion moteurs de recherche et cache** :
+  - `robots: { index: false }` et en-têtes `X-Robots-Tag: noindex, nofollow, noarchive`, `Cache-Control: no-store`.
 - Gestion complète :
   - Création, modification et suppression en 2 étapes (confirmation explicite).
   - Téléversement d'images par glisser/déposer ou sélection, réordonnancement d'images de projets, suppression d'images spécifiques.

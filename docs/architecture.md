@@ -26,7 +26,8 @@ app/
     db.ts                     Client Neon SQL (requêtes paramétrées anti-injection)
     blob.ts                   Gestionnaire d'upload/suppression Vercel Blob avec validation des octets magiques
     media.ts                  Constructeur d'URL `/medias/...` et validation des chemins
-    admin-auth.ts             Contrôle d'accès à l'espace /admin
+    admin-auth.ts             Contrôle d'accès à l'espace /admin (exigerAdmin, assertAdmin)
+    token.ts                  TokenUtil : validation JWT (jose) et vérification dans la table authorized
     langues.ts                Source unique de vérité des langues (fr, en)
     dates.ts                  Formatage déterministe des dates selon la locale (serveur et client)
   modeles/                    Un fichier .ts par modèle de données
@@ -47,6 +48,7 @@ app/
     experiences/page.tsx      Édition des expériences et traductions
     actions/                  Server Actions sécurisées (validation Zod, contrôle d'accès, revalidation)
     components/               Composants formulaires de l'admin
+  no/page.tsx                 Page publique d'accès refusé (compte authentifié mais non autorisé en BDD)
   medias/[...chemin]/route.ts Route de diffusion des images du blob privé avec cache HTTP et en-têtes CSP sandbox
   components/                 Composants UI interactifs de la landing page (framer-motion)
   globals.css                 Variables CSS de thème Tailwind v4

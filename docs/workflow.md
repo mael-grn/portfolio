@@ -19,6 +19,11 @@ pnpm db:migrate
 
 # Initialiser la base et téléverser les données de départ dans le Blob
 pnpm db:seed
+
+# Gérer les utilisateurs autorisés à administrer (table authorized)
+pnpm db:authorize list
+pnpm db:authorize add <id> [nom]
+pnpm db:authorize remove <id>
 ```
 
 Avant toute validation ou commit, `pnpm lint` et `pnpm build` doivent passer sans aucune erreur ni aucun avertissement.

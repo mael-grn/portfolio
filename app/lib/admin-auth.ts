@@ -1,26 +1,74 @@
 import "server-only";
-import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { TokenUtil } from "@/app/lib/token";
+
+export const URL_CONNEXION_COMPTE = "https://account.maelg.fr/login";
 
 /**
- * Point UNIQUE de contrôle d'accès à l'administration.
- *
- * L'authentification n'est pas encore implémentée : en attendant, l'accès est refusé en production
- * (sauf opt-in explicite via ADMIN_ACCES_NON_PROTEGE=true, à ne jamais activer sur un site public).
- * Toutes les pages /admin et toutes les Server Actions d'écriture passent par ces fonctions :
- * il suffira d'y brancher la vraie vérification de session.
+ * Vérifie si la requête courante possède un jeton JWT valide et si son identifiant
+ * est enregistré dans la table `authorized` de la base Neon.
  */
 export async function adminAutorise(): Promise<boolean> {
-    if (process.env.NODE_ENV !== "production") return true;
-    return process.env.ADMIN_ACCES_NON_PROTEGE === "true";
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get("token")?.value;
+        if (!token) return false;
+
+        const isValid = await TokenUtil.verifyToken(token);
+        if (!isValid) return false;
+
+        const id = await TokenUtil.getIdFromToken(token);
+        if (id === null) return false;
+
+        return await TokenUtil.isAuthorized(id);
+    } catch {
+        return false;
+    }
 }
 
+/**
+ * Contrôle d'accès strict pour les Server Actions d'écriture.
+ * Lance une exception immédiate si l'utilisateur n'est pas autorisé.
+ */
 export async function assertAdmin(): Promise<void> {
-    if (!(await adminAutorise())) {
+    const autorise = await adminAutorise();
+    if (!autorise) {
         throw new Error("Accès non autorisé.");
     }
 }
 
-/** À appeler en tête de CHAQUE page /admin (un layout n'est pas ré-exécuté à chaque navigation). */
-export async function exigerAdmin(): Promise<void> {
-    if (!(await adminAutorise())) notFound();
+/**
+ * Contrôle d'accès pour les pages serveur de l'espace /admin.
+ * - Si absent ou jeton invalide : redirection vers https://account.maelg.fr/login
+ * - Si jeton valide mais utilisateur non autorisé en base : redirection vers /no
+ */
+export async function exigerAdmin(urlCible?: string): Promise<void> {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    const creerUrlConnexion = () => {
+        const loginUrl = new URL(URL_CONNEXION_COMPTE);
+        if (urlCible) loginUrl.searchParams.set("redirect", urlCible);
+        return loginUrl.toString();
+    };
+
+    if (!token) {
+        redirect(creerUrlConnexion());
+    }
+
+    const isValid = await TokenUtil.verifyToken(token);
+    if (!isValid) {
+        redirect(creerUrlConnexion());
+    }
+
+    const id = await TokenUtil.getIdFromToken(token);
+    if (id === null) {
+        redirect("/no");
+    }
+
+    const autorise = await TokenUtil.isAuthorized(id);
+    if (!autorise) {
+        redirect("/no");
+    }
 }
