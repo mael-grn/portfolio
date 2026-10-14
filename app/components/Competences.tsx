@@ -1,6 +1,6 @@
 "use client";
 
-import { Competence } from "@/app/modeles";
+import { Competence } from "@/app/modeles/Competence";
 import { motion } from "framer-motion";
 import CompetenceComp from "@/app/components/Competence";
 import { useEffect, useRef, useState } from "react";
@@ -63,9 +63,9 @@ export default function Competences({titre, elements}: { titre: string; elements
 
 
                     {Array.from({ length: iterations }).map((_, batchIndex) =>
-                        elements.map((c, i) => (
+                        elements.map((c) => (
                             <CompetenceComp
-                                key={`batch-${batchIndex}-${c.nom || i}`}
+                                key={`batch-${batchIndex}-${c.id}`}
                                 c={c}
                             />
                         ))

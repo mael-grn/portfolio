@@ -1,20 +1,47 @@
 import Image from "next/image";
-import {getDictionary, Locale} from "@/app/recup-dictionnaire";
-import Services from "@/app/services";
+import type {Metadata} from "next";
+import {notFound} from "next/navigation";
+import {getDictionary} from "@/app/recup-dictionnaire";
+import {LOCALES, Locale, estLocale} from "@/app/lib/langues";
+import {PortfolioService} from "@/app/services/PortfolioService";
 import Anm from "@/app/components/Animator3000";
 import DynBg from "@/app/components/DynamicBackground";
 import Competences from "@/app/components/Competences";
-import LayoutContainer from "@/app/components/LayoutContainer";
 import ResizeGroup from "@/app/components/ResizeGroup";
 import {Bubble, BubbleContainer} from "@/app/components/BubbleAnimaned";
+import ProjectComp from "@/app/components/ProjectComp";
+import {CategorieCompetence} from "@/app/modeles/Competence";
+import Timeline from "@/app/components/TimeLine";
 
 interface Props {
-    params: Promise<{ lang: Locale }>;
+    params: Promise<{ lang: string }>;
 }
 
-export default async function Home({params}: Props) {
+// Page 100 % statique : générée au build pour chaque langue, régénérée à la demande après une modification
+// dans /admin (revalidatePath). Aucune requête vers la base à chaque visite. Langue inconnue => 404.
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+    return LOCALES.map((lang) => ({lang}));
+}
+
+export async function generateMetadata({params}: Props): Promise<Metadata> {
     const {lang} = await params;
+    if (!estLocale(lang)) return {};
     const dict = await getDictionary(lang);
+    return {title: dict.meta.titre, description: dict.meta.description};
+}
+
+// Ordre d'affichage des catégories de compétences ; les catégories vides ne sont pas affichées.
+const ORDRE_CATEGORIES: CategorieCompetence[] = ["web", "programmation", "bdd", "deploiement", "equipe"];
+
+export default async function Home({params}: Props) {
+    const {lang: langue} = await params;
+    if (!estLocale(langue)) notFound();
+    const lang: Locale = langue;
+
+    const [dict, portfolio] = await Promise.all([getDictionary(lang), PortfolioService.recuperer(lang)]);
+    const libellesProjet = {details: dict.projets.details, present: dict.parcours.present};
 
     return (
         <main className={"flex flex-col max-w-full"}>
@@ -105,10 +132,12 @@ export default async function Home({params}: Props) {
                 </Anm>
                 <div className={"flex flex-col gap-0 p-2 rounded-lg bg-foreground"}>
                     <ResizeGroup>
-                        <Competences titre={dict.competences.web.titre} elements={dict.competences.web.liste}/>
-                        <Competences titre={dict.competences.programmation.titre} elements={dict.competences.programmation.liste}/>
-                        <Competences titre={dict.competences.bdd.titre} elements={dict.competences.bdd.liste}/>
-                        <Competences titre={dict.competences.deploiement.titre} elements={dict.competences.deploiement.liste}/>
+                        {ORDRE_CATEGORIES.map((categorie) => {
+                            const elements = portfolio.competences.filter((c) => c.categorie === categorie);
+                            return elements.length > 0 && (
+                                <Competences key={categorie} titre={dict.competences.categories[categorie]} elements={elements}/>
+                            );
+                        })}
                     </ResizeGroup>
                 </div>
             </div>
@@ -117,6 +146,23 @@ export default async function Home({params}: Props) {
                 <Anm>
                     <h1 className={"text-background text-2xl sm:text-5xl"}>{dict.projets.titre}</h1>
                 </Anm>
+
+            <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-dense gap-3 z-10"}>
+                {portfolio.projets.map((projet, index) => (
+                    <div key={projet.id} className={`grid ${projet.taille === 4 ? "lg:col-span-2" : projet.taille === 3 ? "sm:col-span-2" : ""}`}>
+                        <ProjectComp p={projet} lang={lang} labels={libellesProjet} delay={(index % 3) * 0.1}/>
+                    </div>
+                ))}
+            </div>
+
+            </div>
+
+            <div id={"code"} className={"sm:px-16 py-5 sm:py-16 mt-32 px-4 w-full flex flex-col gap-6"}>
+                <Anm>
+                    <h1 className={"text-background text-2xl sm:text-5xl"}>{dict.parcours.titre}</h1>
+                </Anm>
+
+                <Timeline elements={portfolio.experiences} lang={lang} presentLabel={dict.parcours.present}/>
 
             </div>
 

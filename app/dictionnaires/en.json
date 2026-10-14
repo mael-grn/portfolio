@@ -1,29 +1,39 @@
 {
+  "meta": {
+    "titre": "Maël Garnier",
+    "description": "Portfolio of Maël Garnier, future computer engineer: projects, skills and background."
+  },
   "ui": {
-    "intro": {
-      "description": "Étudiant - Ingénieur - Développeur"
+    "hero": {
+      "titre": "Yet another engineer?",
+      "moi": "Enlightened future computer engineer",
+      "description": "You don't need another computer engineer. You need a forerunner, a pioneer of new technologies to move your projects forward."
     },
-    "competences": {
-      "titre": "Ce que je sais faire",
-      "description": "Apprenez en plus sur mes compétences, ainsi que toute les technologies que je maitrise"
+    "moi": {
+      "titre": "I'm more than an engineer",
+      "description": "Well informed about modern and future technologies, I have the skills and the drive to bring them into your projects."
     }
   },
-  "competences": [
-    {
-      "nom": "TypeScript",
-      "type": "Programmation",
-      "chemin_logo": "typescript.png",
-      "maitrise": 4,
-      "apprentissage": "Autodidacte",
-      "nombre_projets": 0
-    },
-    {
-      "nom": "NextJS",
-      "type": "Programmation",
-      "chemin_logo": "nextjs.png",
-      "maitrise": 5,
-      "apprentissage": "Autodidacte",
-      "nombre_projets": 0
+  "dev": {
+    "titre": "Traditional or agentic development, I'm an expert at both",
+    "description": "Backed by skills acquired at university, in industry and in personal projects, I'm comfortable with any form of development. Whether it's manually building and maintaining a clean codebase or driving agents effectively, nothing holds secrets for me."
+  },
+  "competences": {
+    "titre": "What I master",
+    "categories": {
+      "programmation": "Programming",
+      "web": "Web",
+      "bdd": "Databases",
+      "deploiement": "Deployment",
+      "equipe": "Teamwork"
     }
-  ]
+  },
+  "parcours": {
+    "titre": "My background and experience",
+    "present": "Present"
+  },
+  "projets": {
+    "titre": "What I've built",
+    "details": "Details"
+  }
 }

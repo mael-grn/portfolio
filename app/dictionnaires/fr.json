@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "titre": "Maël Garnier",
+    "description": "Portfolio de Maël Garnier, futur ingénieur informatique : projets, compétences et parcours."
+  },
   "ui": {
     "hero": {
       "titre": "Encore un ingénieur ?",
@@ -14,237 +18,22 @@
     "titre": "Développement traditionnel ou agentique, je suis expert partout",
     "description": "Fort de compétences acquises à l'université, en entreprise et dans des projets personnels, je suis à l'aise dans n'importe quelle forme de développement. Que ce soit pour manuellement développer et entrenir une base de code propre, ou piloter des agents de manière efficace, rien n'a de secrets pour moi."
   },
-  "projets": {
-    "titre": "Ce que j'ai fait",
-    "liste": [
-      {
-        "nom": "Lightness Duo",
-        "description": "ksdj flksjd flkdsfj dsklfj ldskfjlk ezjlkfjeziln zeiln ezin vkuezbnvuk ezbvkzeub kuezb kuzb fub ezufb ezjfb ezj",
-        "dateDebut": "01/09/2026",
-        "dateFin": "17/09/2026",
-        "competences": [
-          "Next.js", "Vercel", "Neon", "PostgreSQL"
-        ],
-        "images": [
-          "lightness-home.jpg",
-          "lightness-editor.jpg"
-        ]
-      }
-    ]
-  },
   "competences": {
     "titre": "Ce que je maîtrise",
-    "programmation": {
-      "titre": "Programmation",
-      "liste": [
-        {
-          "nom": "Java",
-          "chemin_logo": "java.png",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Python",
-          "chemin_logo": "python.webp",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Kotlin",
-          "chemin_logo": "kotlin.png",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "C",
-          "chemin_logo": "c.webp",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "C++",
-          "chemin_logo": "cpp.webp",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Rust",
-          "chemin_logo": "rust.webp",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "C#",
-          "chemin_logo": "csharp.webp",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Assembleur",
-          "chemin_logo": "asm.png",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "R",
-          "chemin_logo": "r.svg",
-          "maitrise": 3,
-          "nombre_projets": 0
-        }
-      ]
-    },
-    "web": {
-      "titre": "Web",
-      "liste": [
-        {
-          "nom": "TypeScript",
-          "chemin_logo": "typescript.png",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "NextJS",
-          "chemin_logo": "nextjs.jpg",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "PHP",
-          "chemin_logo": "php.png",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "JavaScript",
-          "chemin_logo": "javascript.png",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "React",
-          "chemin_logo": "react.png",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Angular",
-          "chemin_logo": "angular.png",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Vue.js",
-          "chemin_logo": "vue.webp",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Vite",
-          "chemin_logo": "vite.webp",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "HTML",
-          "chemin_logo": "html.webp",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "CSS",
-          "chemin_logo": "css.webp",
-          "maitrise": 5,
-          "nombre_projets": 0
-        }
-      ]
-    },
-    "bdd": {
-      "titre": "Bases de données",
-      "liste": [
-        {
-          "nom": "PostgreSQL",
-          "chemin_logo": "postgres.webp",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "SQL server",
-          "chemin_logo": "sqlserver.png",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "SQLite",
-          "chemin_logo": "sqlite.webp",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "MySQL",
-          "chemin_logo": "mysql.png",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "MongoDB",
-          "chemin_logo": "mongodb.webp",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Supabase",
-          "chemin_logo": "supabase.webp",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Neon",
-          "chemin_logo": "neon.webp",
-          "maitrise": 5,
-          "nombre_projets": 0
-        }
-      ]
-    },
-    "deploiement": {
-      "titre": "Déploiement",
-      "liste": [
-        {
-          "nom": "Azure",
-          "chemin_logo": "azure.png",
-          "maitrise": 4,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Vercel",
-          "chemin_logo": "vercel.svg",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Apache",
-          "chemin_logo": "apache.png",
-          "maitrise": 5,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Windows Server",
-          "chemin_logo": "wserver.webp",
-          "maitrise": 3,
-          "nombre_projets": 0
-        },
-        {
-          "nom": "Docker",
-          "chemin_logo": "docker.png",
-          "maitrise": 5,
-          "nombre_projets": 0
-        }
-      ]
-    },
-    "equipe": {
-      "titre": "Travail d'équipe",
-      "liste": [
-
-      ]
+    "categories": {
+      "programmation": "Programmation",
+      "web": "Web",
+      "bdd": "Bases de données",
+      "deploiement": "Déploiement",
+      "equipe": "Travail d'équipe"
     }
+  },
+  "parcours": {
+    "titre": "Mon parcours et mes experiences",
+    "present": "Présent"
+  },
+  "projets": {
+    "titre": "Ce que j'ai fait",
+    "details": "Détails"
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import Image from "next/image";
 import Anm from "@/app/components/Animator3000";
 
 function BackgroundScrubber() {
@@ -89,11 +90,14 @@ export default function DynBg() {
     return (
         <div className="fixed inset-0 w-full h-[100dvh] md:h-screen -z-1 pointer-events-none overflow-hidden">
             {/* L'image subit le scale de Anm */}
-            <Anm className="w-full h-full min-h-[100dvh] md:min-h-screen" y={0} scale={1.5}>
-                <img
+            <Anm className="w-full h-full min-h-[100dvh] md:min-h-screen relative" y={0} scale={1.5}>
+                <Image
                     className="w-full h-full min-h-[100dvh] md:min-h-screen object-cover"
                     src="/hero.jpeg"
-                    alt="hero"
+                    alt="Fond visuel dynamique"
+                    fill
+                    priority
+                    sizes="100vw"
                 />
             </Anm>
 

@@ -3,9 +3,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
+import { LOCALES, LOCALE_PAR_DEFAUT } from '@/app/lib/langues';
 
-const locales = ['fr', 'en'];
-const defaultLocale = 'fr';
+const locales: readonly string[] = LOCALES;
+const defaultLocale: string = LOCALE_PAR_DEFAUT;
 
 function getLocale(request: NextRequest): string {
     const negotiatorHeaders: Record<string, string> = {};
@@ -14,7 +15,7 @@ function getLocale(request: NextRequest): string {
     const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
 
     try {
-        return match(languages, locales, defaultLocale);
+        return match(languages, [...locales], defaultLocale);
     } catch {
         return defaultLocale;
     }
@@ -38,6 +39,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    // Ignore les routes API, les assets statiques et les fichiers système
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)'],
+    // Ignore les routes API, l'administration, les médias, les assets statiques et les fichiers système
+    matcher: ['/((?!api|admin|medias|_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };
