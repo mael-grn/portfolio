@@ -1,9 +1,9 @@
 # Documentation du portfolio
 
-Index de la documentation. Ces fichiers sont mis à jour en même temps que le code (voir `CLAUDE.md`, section « Documentation »).
+Index de la documentation technique et fonctionnelle. Ces fichiers sont tenus à jour à chaque évolution du projet (voir `GEMINI.md`, section « Documentation »).
 
-- [architecture.md](architecture.md) : structure du projet, flux de données, composants
-- [fonctionnalites.md](fonctionnalites.md) : sections de la page et animations
-- [i18n.md](i18n.md) : multilingue fr / en
-- [seo.md](seo.md) : SSR, SEO, état actuel et chantiers
-- [workflow.md](workflow.md) : développement, branches, releases
+- [architecture.md](architecture.md) : structure du projet, flux de données, Neon PostgreSQL, Vercel Blob et services.
+- [fonctionnalites.md](fonctionnalites.md) : sections publiques, espace d'administration `/admin`, modèles et animations.
+- [i18n.md](i18n.md) : stratégie multilingue fr / en (statique et dynamique en BDD).
+- [seo.md](seo.md) : SSG, ISR, métadonnées, sécurité et performances médias.
+- [workflow.md](workflow.md) : commandes pnpm, gestion des branches Git et releases.
