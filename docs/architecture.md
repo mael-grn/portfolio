@@ -71,4 +71,4 @@ docs/                         Documentation technique et fonctionnelle
    - En fin d'action, `revalidatePath('/[lang]', 'page')` invalide le cache statique de la landing page pour propager immédiatement les modifications sans re-déploiement.
 
 ## Conventions
-Voir `GEMINI.md` : Tailwind uniquement, animations framer-motion exclusivement, sécurité renforcée (SQL paramétré, validation Zod, blob privé), réactivité SSG/ISR.
+Voir `GEMINI.md` : respect de la charte `DESIGN.md`, modularité et réutilisation maximale des composants existants, Tailwind uniquement, animations framer-motion exclusivement, sécurité renforcée (SQL paramétré, validation Zod, blob privé), réactivité SSG/ISR.

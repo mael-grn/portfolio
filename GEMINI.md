@@ -173,7 +173,11 @@ docs/                             # Documentation vivante du projet (voir sectio
 ## 9. Conventions personnelles de Maël
 
 - **Nommage** : code métier et données rédigés en **français** (`Competence`, `Projet`, `Experience`, `PortfolioService`, etc.). Concepts techniques standards en anglais.
-- **Composants** : un composant par fichier, PascalCase, `export default function`. Composants interactifs isolés au plus bas de l'arbre.
+- **Composants & Modularité** :
+  - **Modularité maximale** : appliquer au maximum le principe de composant dans toute l'application (découpage granulaire, responsabilités uniques, haute composabilité).
+  - **Réutilisation systématique** : réutiliser au maximum les composants existants (`app/components/*`, `app/admin/components/*`, `Anm`, etc.) plutôt que de dupliquer du balisage, des styles ou du comportement. Privilégier l'extension ou l'assemblage de composants existants avant toute création d'un nouveau.
+  - **Structure** : un composant par fichier, PascalCase, `export default function`.
+  - **Isolation client/serveur** : isoler les composants interactifs (`"use client"`) au plus bas de l'arbre pour préserver le rendu serveur (RSC) sur le reste de la page.
 - **Indentation** : 4 espaces, syntaxe propre, pas de commentaires superflus mais préservation stricte de toute documentation existante utile.
 - **Communication** : toujours répondre en français, de manière concise, directe et professionnelle.
 
@@ -217,6 +221,7 @@ docs/                             # Documentation vivante du projet (voir sectio
 ## 12. Checklist avant de conclure une tâche
 
 - [ ] Respect strict de la charte graphique [`DESIGN.md`](DESIGN.md) (typographies, échelle, surfaces, pas d'ombres diffuses).
+- [ ] Découpage en composants respecté et réutilisation maximale des composants existants.
 - [ ] Contenu rendu côté serveur (SSG / SSR) et indexable.
 - [ ] Zéro CSS pur ; zéro animation CSS/Tailwind (framer-motion uniquement).
 - [ ] Modèles séparés dans `app/modeles/*.ts`.
