@@ -6,18 +6,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "node --env-file=.env scripts/migrate.mjs",
+    "db:seed": "node --env-file=.env scripts/seed.mjs",
+    "db:authorize": "node --env-file=.env scripts/authorize.mjs"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.8.13",
+    "@heroicons/react": "^2.2.0",
+    "@neondatabase/serverless": "^1.2.0",
+    "@vercel/blob": "^2.8.1",
     "framer-motion": "^13.1.1",
+    "jose": "^6.2.12",
+    "local-ssl-proxy": "^2.0.5",
+    "matter-js": "^0.20.0",
     "negotiator": "^1.1.0",
     "next": "16.3.1",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/matter-js": "^0.20.2",
     "@types/negotiator": "^0.6.5",
     "@types/node": "^20",
     "@types/react": "^19",
