@@ -1,7 +1,17 @@
 {
   "meta": {
-    "titre": "Maël Garnier",
+    "titre": "Maël Garnier — Enlightened Computer Engineer",
     "description": "Portfolio of Maël Garnier, future computer engineer: projects, skills and background."
+  },
+  "nav": {
+    "apercu": "Overview",
+    "aPropos": "About",
+    "vision": "Vision",
+    "competences": "Skills",
+    "projets": "Projects",
+    "parcours": "Timeline",
+    "contact": "CONTACT",
+    "basculerLangue": "Switch to French"
   },
   "ui": {
     "hero": {
@@ -10,30 +20,80 @@
       "description": "You don't need another computer engineer. You need a forerunner, a pioneer of new technologies to move your projects forward."
     },
     "moi": {
+      "badge": "PROFILE // ARCHITECT",
       "titre": "I'm more than an engineer",
-      "description": "Well informed about modern and future technologies, I have the skills and the drive to bring them into your projects."
+      "description": "Well informed about modern and future technologies, I have the skills and the drive to bring them into your projects.",
+      "metadonnees": {
+        "experience": "EXPERIENCE",
+        "experienceVal": "SYSTEMS & WEB",
+        "methodologie": "METHODOLOGY",
+        "methodologieVal": "AGENTIC & CLEAN CODE",
+        "environnement": "ENVIRONMENT",
+        "environnementVal": "HIGH PERFORMANCE"
+      }
     }
   },
   "dev": {
+    "badge": "HYBRID WORKFLOW // AGENTIC & TRADITIONAL",
     "titre": "Traditional or agentic development, I'm an expert at both",
-    "description": "Backed by skills acquired at university, in industry and in personal projects, I'm comfortable with any form of development. Whether it's manually building and maintaining a clean codebase or driving agents effectively, nothing holds secrets for me."
+    "description": "Backed by skills acquired at university, in industry and in personal projects, I'm comfortable with any form of development. Whether it's manually building and maintaining a clean codebase or driving agents effectively, nothing holds secrets for me.",
+    "outils": {
+      "claudeRole": "Reasoning & Refactor",
+      "geminiRole": "Multimodal & Vision",
+      "chatgptRole": "Code generation"
+    }
   },
   "competences": {
+    "badge": "SYSTEMS & EXPERTISE",
     "titre": "What I master",
+    "filtreToutes": "ALL",
+    "projetsAbrege": "proj.",
+    "cliquerPourEnSavoirPlus": "Click to learn more",
+    "niveauMaitrise": "Mastery level",
+    "categorie": "Category",
+    "projetsAssocies": "Associated projects",
+    "aucunProjetAssocie": "No projects yet",
+    "fermer": "Close details",
+    "boutonFermer": "Close",
+    "maitriseAbrege": "(mastery)",
     "categories": {
       "programmation": "Programming",
       "web": "Web",
       "bdd": "Databases",
       "deploiement": "Deployment",
-      "equipe": "Teamwork"
+      "equipe": "Teamwork",
+      "agentique": "Agentic"
     }
   },
   "parcours": {
+    "badge": "CAREER TIMELINE & MILESTONES",
     "titre": "My background and experience",
-    "present": "Present"
+    "present": "Present",
+    "jalonsRealises": "STEPS COMPLETED"
   },
   "projets": {
+    "badge": "PORTFOLIO // MONOLITHS & DELIVERABLES",
     "titre": "What I've built",
-    "details": "Details"
+    "details": "Details",
+    "enCours": "Current",
+    "projetsDeployes": "PROJECTS DELIVERED",
+    "mediasEtInterfaces": "MEDIA & INTERFACES",
+    "fermer": "Close",
+    "dernierProjetBadge": "LATEST DELIVERABLE",
+    "autreProjetBadge": "PROJECT",
+    "aucunMedia": "No visual media",
+    "imagePrecedente": "Previous image",
+    "imageSuivante": "Next image",
+    "defilerGauche": "Scroll left",
+    "defilerDroite": "Scroll right",
+    "selectionnerProjet": "Display this project"
+  },
+  "footer": {
+    "role": "Software Engineer",
+    "github": "GITHUB",
+    "linkedin": "LINKEDIN",
+    "contact": "CONTACT",
+    "admin": "ADMIN",
+    "signature": "Maël Garnier · Alpine Engineering"
   }
 }

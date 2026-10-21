@@ -1,36 +1,65 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Bouton, MessageResultat } from "@/app/admin/components/ui";
+import { useEffect, useState, useTransition } from "react";
+import { TrashIcon } from "@heroicons/react/20/solid";
 import type { ResultatAction } from "@/app/admin/actions/utils";
+import BoutonAdmin from "@/app/admin/components/BoutonAdmin";
 
-/** Suppression en deux temps (confirmation explicite) pour éviter les erreurs de manipulation. */
+interface BoutonSupprimerProps {
+    id: string;
+    action: (id: string) => Promise<ResultatAction>;
+    libelle?: string;
+    onSupprime?: () => void;
+}
+
+/** Suppression en deux temps (confirmation explicite) pour sécuriser les opérations critiques. */
 export default function BoutonSupprimer({
-    id, action, libelle,
-}: { id: string; action: (id: string) => Promise<ResultatAction>; libelle: string }) {
+    id,
+    action,
+    onSupprime,
+}: BoutonSupprimerProps) {
     const [confirmation, setConfirmation] = useState(false);
     const [resultat, setResultat] = useState<ResultatAction | null>(null);
     const [enCours, demarrer] = useTransition();
 
-    if (!confirmation) {
-        return <Bouton type="button" variante="secondaire" onClick={() => setConfirmation(true)}>Supprimer</Bouton>;
+    useEffect(() => {
+        if (!confirmation) return;
+        const timer = setTimeout(() => {
+            setConfirmation(false);
+        }, 4000);
+        return () => clearTimeout(timer);
+    }, [confirmation]);
+
+    function handleClick() {
+        if (!confirmation) {
+            setConfirmation(true);
+            return;
+        }
+
+        demarrer(async () => {
+            const res = await action(id);
+            setResultat(res);
+            if (res.ok && onSupprime) {
+                onSupprime();
+            }
+        });
     }
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm">Supprimer « {libelle} » définitivement ?</span>
-            <Bouton
+        <div className="inline-flex items-center gap-2">
+            <BoutonAdmin
                 type="button"
                 variante="danger"
-                disabled={enCours}
-                onClick={() => demarrer(async () => setResultat(await action(id)))}
-            >
-                {enCours ? "Suppression…" : "Confirmer"}
-            </Bouton>
-            <Bouton type="button" variante="secondaire" disabled={enCours} onClick={() => setConfirmation(false)}>
-                Annuler
-            </Bouton>
-            <MessageResultat resultat={resultat && !resultat.ok ? resultat : null} />
+                chargement={enCours}
+                icone={<TrashIcon className="w-4 h-4" />}
+                texte={enCours ? "Suppression…" : confirmation ? "Confirmer" : "Supprimer"}
+                onClick={handleClick}
+            />
+            {resultat && !resultat.ok && (
+                <span className="text-xs font-sans font-medium text-red-600">
+                    {resultat.message}
+                </span>
+            )}
         </div>
     );
 }

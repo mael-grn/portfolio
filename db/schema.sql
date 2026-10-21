@@ -6,7 +6,7 @@
 CREATE TABLE IF NOT EXISTS competence (
     id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     nom         text        NOT NULL CHECK (char_length(nom) BETWEEN 1 AND 80),
-    categorie   text        NOT NULL CHECK (categorie IN ('programmation', 'web', 'bdd', 'deploiement', 'equipe')),
+    categorie   text        NOT NULL CHECK (categorie IN ('programmation', 'web', 'bdd', 'deploiement', 'equipe', 'agentique')),
     logo_chemin text        CHECK (logo_chemin IS NULL OR char_length(logo_chemin) <= 300),
     maitrise    smallint    NOT NULL DEFAULT 3 CHECK (maitrise BETWEEN 0 AND 5),
     ordre       integer     NOT NULL DEFAULT 0,
@@ -75,8 +75,40 @@ CREATE TABLE IF NOT EXISTS experience_traduction (
     PRIMARY KEY (experience_id, lang)
 );
 
+CREATE TABLE IF NOT EXISTS parcours (
+    id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    date_debut  date        NOT NULL,
+    date_fin    date,
+    created_at  timestamptz NOT NULL DEFAULT now(),
+    updated_at  timestamptz NOT NULL DEFAULT now(),
+    CHECK (date_fin IS NULL OR date_fin >= date_debut)
+);
+
+CREATE INDEX IF NOT EXISTS parcours_date_debut_idx ON parcours (date_debut);
+
+CREATE TABLE IF NOT EXISTS parcours_traduction (
+    parcours_id   uuid NOT NULL REFERENCES parcours (id) ON DELETE CASCADE,
+    lang          text NOT NULL CHECK (lang ~ '^[a-z]{2}$'),
+    nom           text NOT NULL CHECK (char_length(nom) BETWEEN 1 AND 160),
+    lieu          text NOT NULL DEFAULT '' CHECK (char_length(lieu) <= 160),
+    description   text NOT NULL DEFAULT '' CHECK (char_length(description) <= 5000),
+    PRIMARY KEY (parcours_id, lang)
+);
+
 CREATE TABLE IF NOT EXISTS authorized (
     id          text PRIMARY KEY,
     nom         text,
     created_at  timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS journal_activite (
+    id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    type_action text        NOT NULL CHECK (type_action IN ('creation', 'modification', 'suppression')),
+    entite      text        NOT NULL CHECK (entite IN ('competence', 'projet', 'experience', 'parcours')),
+    cible_nom   text        NOT NULL CHECK (char_length(cible_nom) <= 200),
+    auteur_id   text        NOT NULL,
+    auteur_nom  text        NOT NULL,
+    created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS journal_activite_created_at_idx ON journal_activite (created_at DESC);

@@ -1,10 +1,11 @@
 "use server";
 
-import { assertAdmin } from "@/app/lib/admin-auth";
+import { assertAdmin, recupererAdminCourant } from "@/app/lib/admin-auth";
 import { supprimerImages, televerserImage } from "@/app/lib/blob";
 import { CompetenceSaisieSchema } from "@/app/modeles/Competence";
 import { IdSchema } from "@/app/modeles/Traduction";
 import { CompetenceService } from "@/app/services/CompetenceService";
+import { JournalService } from "@/app/services/JournalService";
 import {
     ResultatAction, SUCCES, echec, erreurInattendue, erreursZod, fichier, revalider, texte,
 } from "@/app/admin/actions/utils";
@@ -27,13 +28,40 @@ export async function enregistrerCompetence(_precedent: ResultatAction | null, f
         const existant = saisie.id ? await CompetenceService.recupererLogo(saisie.id) : null;
         if (saisie.id && !existant) return echec("Compétence introuvable.");
 
-        const logo = fichier(formData, "logo");
-        if (logo) nouveauLogo = await televerserImage(logo, "competences");
-        const supprimerLogo = texte(formData, "supprimerLogo") === "on";
-        const logoFinal = nouveauLogo ?? (supprimerLogo ? null : (existant?.logoChemin ?? null));
+        const logoCheminDirect = texte(formData, "logoChemin");
+        let logoFinal: string | null = null;
+        if (formData.has("logoChemin")) {
+            // Le formulaire a soumis un logoChemin explicite (chemin direct ou vide si supprimé)
+            logoFinal = logoCheminDirect.trim() !== "" ? logoCheminDirect.trim() : null;
+        } else {
+            // Fallback fichier brut
+            const logo = fichier(formData, "logo");
+            if (logo) nouveauLogo = await televerserImage(logo, "competences");
+            const supprimerLogo = texte(formData, "supprimerLogo") === "on";
+            logoFinal = nouveauLogo ?? (supprimerLogo ? null : (existant?.logoChemin ?? null));
+        }
 
-        if (saisie.id) await CompetenceService.modifier(saisie.id, saisie, logoFinal);
-        else await CompetenceService.creer(saisie, logoFinal);
+        const admin = await recupererAdminCourant();
+
+        if (saisie.id) {
+            await CompetenceService.modifier(saisie.id, saisie, logoFinal);
+            await JournalService.enregistrer({
+                typeAction: "modification",
+                entite: "competence",
+                cibleNom: saisie.nom,
+                auteurId: admin.id,
+                auteurNom: admin.nom,
+            });
+        } else {
+            await CompetenceService.creer(saisie, logoFinal);
+            await JournalService.enregistrer({
+                typeAction: "creation",
+                entite: "competence",
+                cibleNom: saisie.nom,
+                auteurId: admin.id,
+                auteurNom: admin.nom,
+            });
+        }
 
         if (existant?.logoChemin && existant.logoChemin !== logoFinal) await supprimerImages([existant.logoChemin]);
     } catch (erreur) {
@@ -42,6 +70,7 @@ export async function enregistrerCompetence(_precedent: ResultatAction | null, f
     }
 
     revalider("/admin/competences");
+    revalider("/admin");
     return SUCCES;
 }
 
@@ -51,12 +80,22 @@ export async function supprimerCompetence(id: string): Promise<ResultatAction> {
     if (!analyse.success) return echec("Identifiant invalide.");
 
     try {
+        const admin = await recupererAdminCourant();
         const logo = await CompetenceService.supprimer(analyse.data);
         if (logo) await supprimerImages([logo]);
+
+        await JournalService.enregistrer({
+            typeAction: "suppression",
+            entite: "competence",
+            cibleNom: `Compétence ${id.slice(0, 8)}`,
+            auteurId: admin.id,
+            auteurNom: admin.nom,
+        });
     } catch (erreur) {
         return erreurInattendue(erreur);
     }
 
     revalider("/admin/competences");
+    revalider("/admin");
     return SUCCES;
 }

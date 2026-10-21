@@ -76,7 +76,7 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 ---
 
-## 3. Règles strictes de style et d'animations
+## 3. Règles strictes de style, animations & dynamisme
 
 - **CHARTE GRAPHIQUE OFFICIELLE (`DESIGN.md`) :**
   - Tout développement UI, choix de typographie, espacement, découpe géométrique et composant visuel **doit impérativement respecter la charte graphique définie dans [`DESIGN.md`](DESIGN.md)** (*High-Altitude Engineering / Alpine precision & software engineering monolith on mineral slate*).
@@ -91,6 +91,13 @@ docs/                             # Documentation vivante du projet (voir sectio
   - Sont formellement interdits dans le code : classes `transition-*`, `duration-*`, `ease-*`, `animate-*` (`animate-spin`, `animate-pulse`, etc.), `@keyframes` CSS, et les pseudo-classes `hover:` servant à fabriquer des transitions animées.
   - Toutes les animations (apparitions au scroll, transitions de page, survols, layouts reordonnés, défilements) doivent être réalisées avec framer-motion : `motion.*`, `whileHover`, `whileTap`, `whileInView`, `AnimatePresence`, `layout`, `useScroll`, `useSpring`.
   - Réutiliser le composant `Anm` (`Animator3000`) avec son easing caractéristique `[0.16, 1, 0.3, 1]`.
+- **DYNAMISME INTÉGRAL, MOTION DESIGN & SCROLLYTELLING :**
+  - **Tout le contenu du site doit être dynamique et animé** : aucune section ou élément ne doit être statique ou inerte. L'ensemble de la page vit et réagit au scroll et aux interactions de l'utilisateur.
+  - **Principes de motion design & scrollytelling** :
+    - Construire une narration progressive guidée par le défilement (scrollytelling) : apparitions séquencées, échelonnement cinétique (stagger), transitions d'état fluides, parallaxe alpine mesurée et contrôle précis de la progression de lecture.
+    - Utilisation avancée des hooks framer-motion (`useScroll`, `useTransform`, `useSpring`, `useVelocity`) pour synchroniser les éléments d'interface (jauges télémétriques, lignes de timeline, scrubber d'ambiance en 3 actes, compteurs).
+    - Micro-interactions et physique interactive : gestuelle mécanique nette via `whileHover` et `whileTap`, couplée aux moteurs physiques adéquats comme `matter-js` pour les environnements interactifs (ex. arène de bulles d'agents).
+    - Respecter les courbes cinétiques d'ingénierie alpine : animations franches, précises, sans rebonds fantaisistes ni délais excessifs.
 
 ---
 
@@ -122,11 +129,13 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 ## 6. SSR & SEO — Priorité absolue
 
-- **Landing page statique et ultra-rapide** :
+- **Landing page statique, ultra-rapide & Server Component strict** :
+  - `app/[lang]/page.tsx` **est et doit impérativement rester un Server Component** : **INTERDICTION ABSOLUE de placer `"use client"` sur la page de base**.
   - `app/[lang]/page.tsx` est pré-généré au build via `generateStaticParams()` pour chaque langue disponible (`fr`, `en`).
   - `dynamicParams = false` : toute route linguistique non définie produit immédiatement un 404.
   - Les données Neon sont chargées via `PortfolioService.recuperer(lang)` qui effectue **une seule transaction HTTP** regroupant les 3 requêtes (compétences, projets, expériences) avec agrégation JSON côté PostgreSQL (zéro problème N+1).
   - La fonction est enveloppée dans `React.cache()` pour dédoublonner au sein d'un même rendu.
+  - Tout le dynamisme interactif, les animations framer-motion et le scrollytelling sont délégués à des composants clients granulaires isolés au plus bas niveau de l'arbre (`"use client"` strictement réservé aux composants feuilles).
 - **Revalidation ISR à la demande** :
   - Lors d'une modification dans `/admin`, les Server Actions déclenchent `revalidatePath('/[lang]', 'page')`, ce qui régénère instantanément les pages du portfolio sans redémarrage.
 - **SEO & Balisage** :
@@ -161,12 +170,18 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 ---
 
-## 8. Internationalisation (i18n)
+## 8. Internationalisation (i18n) & Centralisation stricte des textes
 
 - Deux langues officielles : `fr` (par défaut) et `en`. Source unique : `app/lib/langues.ts`.
 - `proxy.ts` inspecte les en-têtes `Accept-Language` et redirige `/` vers `/{locale}` en ignorant les routes système, `/admin`, et `/medias`.
+- **RÈGLE ABSOLUE : ZÉRO TEXTE EN DUR DANS LE CODE UI / LES COMPOSANTS** :
+  - **L'intégralité des textes affichés sur le site** (titres, sous-titres, paragraphes, libellés de boutons, infobulles, badges statiques, métadonnées, textes d'aide, placeholders, messages d'erreur ou d'état, `aria-label` statiques) **doit impérativement provenir exclusivement de l'une des 3 sources suivantes** :
+    1. **Dossier dictionnaires** : `app/dictionnaires/fr.json` et `app/dictionnaires/en.json` (chargés côté serveur via `app/recup-dictionnaire.ts` / `getDictionary(locale)`).
+    2. **Constantes de langues** : `app/lib/langues.ts` (ex. `LOCALES`, `LOCALE_PAR_DEFAUT`).
+    3. **Base de données Neon** : tables relationnelles et traductions via les services métier (`PortfolioService`, `CompetenceService`, `ProjetService`, `ExperienceService`).
+  - **Tolérance zéro** pour toute chaîne textuelle brute codée en dur dans un composant JSX/TSX.
+  - Tout nouvel élément textuel d'interface doit obligatoirement être ajouté et typé dans `fr.json` et `en.json` avant utilisation.
 - Les données dynamiques (projets, expériences) possèdent une table de traduction en base (`projet_traduction`, `experience_traduction`). Si une traduction anglaise n'est pas renseignée, le service de lecture bascule automatiquement sur le contenu français.
-- Les textes d'interface statiques sont dans `app/dictionnaires/fr.json` et `en.json`.
 
 ---
 
@@ -177,7 +192,9 @@ docs/                             # Documentation vivante du projet (voir sectio
   - **Modularité maximale** : appliquer au maximum le principe de composant dans toute l'application (découpage granulaire, responsabilités uniques, haute composabilité).
   - **Réutilisation systématique** : réutiliser au maximum les composants existants (`app/components/*`, `app/admin/components/*`, `Anm`, etc.) plutôt que de dupliquer du balisage, des styles ou du comportement. Privilégier l'extension ou l'assemblage de composants existants avant toute création d'un nouveau.
   - **Structure** : un composant par fichier, PascalCase, `export default function`.
-  - **Isolation client/serveur** : isoler les composants interactifs (`"use client"`) au plus bas de l'arbre pour préserver le rendu serveur (RSC) sur le reste de la page.
+  - **Isolation client/serveur stricte** :
+    - `app/[lang]/page.tsx` est un **Server Component pur sans `"use client"`**.
+    - Tous les composants interactifs, dynamiques et animés avec framer-motion portent `"use client"` au plus bas de l'arbre (composants feuilles ou wrappers d'animation dédiés) et reçoivent leurs données et textes via props depuis le serveur.
 - **Indentation** : 4 espaces, syntaxe propre, pas de commentaires superflus mais préservation stricte de toute documentation existante utile.
 - **Communication** : toujours répondre en français, de manière concise, directe et professionnelle.
 
@@ -188,7 +205,9 @@ docs/                             # Documentation vivante du projet (voir sectio
 ### Développement quotidien
 - **Toute modification se fait directement sur la branche `develop`** : pas de branche de fonctionnalité, **pas de Pull Request**.
 - Avant de commencer : vérifier que l'on est sur `develop` et à jour.
-- Valider systématiquement avec `pnpm lint` et `pnpm build` avant tout commit.
+- **Exécution ciblée de `pnpm lint` et `pnpm build`** : ne pas les exécuter à chaque micro-modification. Les lancer uniquement :
+  1. Après de grosses modifications (refactoring d'envergure, ajout ou refonte d'un composant complexe, modification de schéma ou de logique métier).
+  2. Ou après une série de nombreuses petites modifications successives sans lint ni build (pour valider la cohérence d'ensemble).
 - Faire des commits atomiques avec des messages clairs (ex: `feat: ...`, `fix: ...`, `docs: ...`).
 - **Pousser directement** : `git push origin develop`.
 - Ne **jamais** committer ni pousser directement sur `main` en dehors d'une release officielle.
@@ -222,10 +241,11 @@ docs/                             # Documentation vivante du projet (voir sectio
 
 - [ ] Respect strict de la charte graphique [`DESIGN.md`](DESIGN.md) (typographies, échelle, surfaces, pas d'ombres diffuses).
 - [ ] Découpage en composants respecté et réutilisation maximale des composants existants.
-- [ ] Contenu rendu côté serveur (SSG / SSR) et indexable.
+- [ ] **Zéro texte en dur dans le code JSX** : 100% des textes proviennent exclusivement des dictionnaires (`app/dictionnaires/`), des constantes de langues (`app/lib/langues.ts`) ou de la BDD.
+- [ ] **Page de base `app/[lang]/page.tsx` strictement maintenue en Server Component (zéro `"use client"` à la racine)**.
+- [ ] **Contenu intégralement dynamique et animé avec framer-motion** selon les principes de motion design et scrollytelling (avec matter-js pour la physique interactive).
 - [ ] Zéro CSS pur ; zéro animation CSS/Tailwind (framer-motion uniquement).
 - [ ] Modèles séparés dans `app/modeles/*.ts`.
 - [ ] Sécurité respectée (validation Zod, requêtes SQL paramétrées, sanitization des uploads).
 - [ ] Documentation dans `docs/` mise à jour.
-- [ ] `pnpm lint` passe avec 0 erreur et 0 warning.
-- [ ] `pnpm build` compile avec succès.
+- [ ] `pnpm lint` et `pnpm build` validés si la tâche implique une grosse modification ou après une série de petites modifications cumulées sans vérification.

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { IdSchema, OrdreSchema } from "@/app/modeles/Traduction";
 
-export const CATEGORIES_COMPETENCE = ["programmation", "web", "bdd", "deploiement", "equipe"] as const;
+export const CATEGORIES_COMPETENCE = ["programmation", "web", "bdd", "deploiement", "equipe", "agentique"] as const;
 export type CategorieCompetence = (typeof CATEGORIES_COMPETENCE)[number];
 
 /** Compétence telle qu'affichée sur le site. */

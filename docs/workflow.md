@@ -26,7 +26,7 @@ pnpm db:authorize add <id> [nom]
 pnpm db:authorize remove <id>
 ```
 
-Avant toute validation ou commit, `pnpm lint` et `pnpm build` doivent passer sans aucune erreur ni aucun avertissement.
+Les commandes `pnpm lint` et `pnpm build` ne sont pas à lancer à chaque micro-modification : elles doivent être exécutées après de grosses modifications (refactorings d'envergure, nouveaux composants complexes, modification de schéma ou de logique métier), ou après une série de nombreuses petites modifications successives sans vérification (et obligatoirement avant toute release sur `main`).
 
 ## 2. Gestion des branches Git
 

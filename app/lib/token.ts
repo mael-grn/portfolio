@@ -52,4 +52,22 @@ export class TokenUtil {
             return false;
         }
     }
+
+    /**
+     * Récupère les informations d'un administrateur autorisé par son identifiant.
+     */
+    static async getAdmin(id: string | number): Promise<{ id: string; nom: string } | null> {
+        try {
+            const rows = (await sql`
+                SELECT id, nom FROM authorized WHERE id = ${String(id)} LIMIT 1
+            `) as { id: string; nom: string | null }[];
+            if (rows.length === 0) return null;
+            return {
+                id: rows[0].id,
+                nom: rows[0].nom || "Maël",
+            };
+        } catch {
+            return null;
+        }
+    }
 }

@@ -39,6 +39,26 @@ export async function assertAdmin(): Promise<void> {
 }
 
 /**
+ * Récupère le compte administrateur authentifié pour tracer les modifications.
+ */
+export async function recupererAdminCourant(): Promise<{ id: string; nom: string }> {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get("token")?.value;
+        if (token) {
+            const id = await TokenUtil.getIdFromToken(token);
+            if (id !== null) {
+                const admin = await TokenUtil.getAdmin(id);
+                if (admin) return admin;
+            }
+        }
+    } catch {
+        // En cas d'erreur de lecture
+    }
+    return { id: "1", nom: "Maël" };
+}
+
+/**
  * Contrôle d'accès pour les pages serveur de l'espace /admin.
  * - Si absent ou jeton invalide : redirection vers https://account.maelg.fr/login
  * - Si jeton valide mais utilisateur non autorisé en base : redirection vers /no

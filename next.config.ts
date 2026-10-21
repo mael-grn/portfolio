@@ -11,6 +11,14 @@ const entetesSecurite = [
 ];
 
 const nextConfig: NextConfig = {
+    allowedDevOrigins: [
+        "local.maelg.fr",
+        "local.maelg.fr:3001",
+        "localhost:3001",
+        "localhost:3000",
+        "127.0.0.1:3001",
+        "127.0.0.1:3000",
+    ],
     poweredByHeader: false,
     async headers() {
         return [
@@ -24,6 +32,9 @@ const nextConfig: NextConfig = {
                 ],
             },
         ];
+    },
+    images: {
+        qualities: [75, 90],
     },
     experimental: {
         // Téléversement d'images via Server Actions (4 Mo max par image, validé côté serveur ; Vercel limite la requête à 4,5 Mo).

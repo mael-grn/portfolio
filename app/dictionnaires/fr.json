@@ -1,7 +1,17 @@
 {
   "meta": {
-    "titre": "Maël Garnier",
+    "titre": "Maël Garnier — Ingénieur Informatique Éclairé",
     "description": "Portfolio de Maël Garnier, futur ingénieur informatique : projets, compétences et parcours."
+  },
+  "nav": {
+    "apercu": "Aperçu",
+    "aPropos": "À propos",
+    "vision": "Vision",
+    "competences": "Compétences",
+    "projets": "Projets",
+    "parcours": "Parcours",
+    "contact": "CONTACT",
+    "basculerLangue": "Passer en Anglais"
   },
   "ui": {
     "hero": {
@@ -10,30 +20,80 @@
       "description": "Vous n'avez pas besoin d'un autre ingénieur informatique. Vous avez besoin d'un précurseur, pionnier des nouvelles technologies pour faire avancer vos projets."
     },
     "moi": {
+      "badge": "PROFIL // CONCEPTEUR",
       "titre": "Je suis plus qu'un ingénieur",
-      "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets."
+      "description": "Très renseigné sur les technologies modernes et du futur, j'ai les compétences et la volonté de les intégrer à vos projets.",
+      "metadonnees": {
+        "experience": "EXPÉRIENCE",
+        "experienceVal": "SYSTÈMES & WEB",
+        "methodologie": "MÉTHODOLOGIE",
+        "methodologieVal": "AGENTIQUE & CLEAN CODE",
+        "environnement": "ENVIRONNEMENT",
+        "environnementVal": "HAUTE PERFORMANCE"
+      }
     }
   },
   "dev": {
+    "badge": "DOUBLE EXPERTISE // AGENTIQUE & TRADITIONNEL",
     "titre": "Développement traditionnel ou agentique, je suis expert partout",
-    "description": "Fort de compétences acquises à l'université, en entreprise et dans des projets personnels, je suis à l'aise dans n'importe quelle forme de développement. Que ce soit pour manuellement développer et entrenir une base de code propre, ou piloter des agents de manière efficace, rien n'a de secrets pour moi."
+    "description": "Fort de compétences acquises à l'université, en entreprise et dans des projets personnels, je suis à l'aise dans n'importe quelle forme de développement. Que ce soit pour manuellement développer et entrenir une base de code propre, ou piloter des agents de manière efficace, rien n'a de secrets pour moi.",
+    "outils": {
+      "claudeRole": "Raisonnement & Refactor",
+      "geminiRole": "Multimodal & Vision",
+      "chatgptRole": "Génération de code"
+    }
   },
   "competences": {
+    "badge": "SYSTÈMES & MAÎTRISE",
     "titre": "Ce que je maîtrise",
+    "filtreToutes": "TOUTES",
+    "projetsAbrege": "proj.",
+    "cliquerPourEnSavoirPlus": "Cliquer pour en savoir plus",
+    "niveauMaitrise": "Niveau de maîtrise",
+    "categorie": "Catégorie",
+    "projetsAssocies": "Projets associés",
+    "aucunProjetAssocie": "Aucun projet pour l'instant",
+    "fermer": "Fermer les détails",
+    "boutonFermer": "Fermer",
+    "maitriseAbrege": "(maîtrise)",
     "categories": {
       "programmation": "Programmation",
       "web": "Web",
       "bdd": "Bases de données",
       "deploiement": "Déploiement",
-      "equipe": "Travail d'équipe"
+      "equipe": "Travail d'équipe",
+      "agentique": "Agentique"
     }
   },
   "parcours": {
+    "badge": "CHRONOLOGIE // PARCOURS & ÉTAPES",
     "titre": "Mon parcours et mes experiences",
-    "present": "Présent"
+    "present": "Présent",
+    "jalonsRealises": "JALONS RÉALISÉS"
   },
   "projets": {
+    "badge": "PORTFOLIO // MONOLITHES & SYSTÈMES",
     "titre": "Ce que j'ai fait",
-    "details": "Détails"
+    "details": "Détails",
+    "enCours": "En cours",
+    "projetsDeployes": "PROJETS DÉPLOYÉS",
+    "mediasEtInterfaces": "MÉDIAS ET INTERFACES",
+    "fermer": "Fermer",
+    "dernierProjetBadge": "DERNIÈRE RÉALISATION",
+    "autreProjetBadge": "PROJET",
+    "aucunMedia": "Aucun média visuel",
+    "imagePrecedente": "Image précédente",
+    "imageSuivante": "Image suivante",
+    "defilerGauche": "Défiler vers la gauche",
+    "defilerDroite": "Défiler vers la droite",
+    "selectionnerProjet": "Afficher ce projet"
+  },
+  "footer": {
+    "role": "Ingénieur Logiciel",
+    "github": "GITHUB",
+    "linkedin": "LINKEDIN",
+    "contact": "CONTACT",
+    "admin": "ADMIN",
+    "signature": "Maël Garnier · Alpine Engineering"
   }
 }

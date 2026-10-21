@@ -1,31 +1,86 @@
 @import "tailwindcss";
 
 :root {
+  /* Palette officielle DESIGN.md */
   --background: #dfe5ed;
   --foreground: #20272e;
   --primary: #3f7694;
   --secondary: #43654f;
 
+  /* Couleurs étendues */
+  --color-carbon-black: #20272e;
+  --color-paper-white: #ffffff;
+  --color-warm-canvas: #dfe5ed;
+  --color-mist-gray: #eef2f6;
+  --color-ash: #c2ccd6;
+  --color-smoke: #7a8694;
+  --color-slate: #44505c;
+  --color-graphite: #2c353d;
+
+  /* Surfaces & compatibilité admin */
+  --slate-card: #ffffff;
+  --carbon-surface: #20272e;
+  --hairline: #c2ccd6;
+  --muted-rock: #7a8694;
+  --summit-white: #ffffff;
+
+  /* Typographie */
+  --font-display: var(--font-condensed), 'Barlow Condensed', sans-serif;
+  --font-body: var(--font-sans), 'Inter', sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
 }
 
 @theme inline {
+  /* Core Palette */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+
+  /* Extended Colors & Aliases */
+  --color-paper-white: #ffffff;
+  --color-mist-gray: #eef2f6;
+  --color-ash: #c2ccd6;
+  --color-smoke: #7a8694;
+  --color-slate: #44505c;
+  --color-graphite: #2c353d;
+
+  --color-slate-card: #ffffff;
+  --color-carbon-surface: #20272e;
+  --color-hairline: #c2ccd6;
+  --color-muted-rock: #7a8694;
+  --color-summit: #ffffff;
+
+  /* Typographies */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+  --font-syne: var(--font-display);
+  --font-outfit: var(--font-body);
+  --font-jetbrains: var(--font-mono);
+
+  /* Border Radii DESIGN.md */
+  --radius-buttons: 8px;
+  --radius-cards: 32px;
+  --radius-nav-pill: 48px;
+  --radius-tags: 64px;
+  --radius-large-cards: 64px;
 }
 
 body {
   color: var(--foreground);
-  font-family: Outfit, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+  background-color: var(--background);
+  overflow-x: hidden;
 }
 
-h1, h2, h3 {
-  font-family: Syne, Helvetica, sans-serif;
-  font-weight: 900;
+h1, h2, h3, h4 {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
 }
 
-code {
-  color: var(--background);
-  font-family: JetBrains Mono, Helvetica, sans-serif;
+code, kbd, samp, pre {
+  font-family: var(--font-mono), monospace;
 }
